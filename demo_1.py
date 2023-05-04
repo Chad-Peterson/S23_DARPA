@@ -64,9 +64,9 @@ waypoint_positions = np.array([[0.5, 0, 0],  # ab
                                [1, 0.5, 1],  # fg
                                [0.5, 1, 1]])  # gh
 
-g = nx.Graph()
-g.add_nodes_from(nodes)
-g.add_edges_from(edges)
+# g = nx.Graph()
+# g.add_nodes_from(nodes)
+# g.add_edges_from(edges)
 
 # node_positions = np.concatenate((component_positions, waypoint_positions), axis=0)
 
@@ -75,25 +75,30 @@ g.add_edges_from(edges)
     # k = 1/sqrt(n) default
     # k = 1/(4*np.sqrt(len(nodes)))
 
+g = nx.random_geometric_graph(500,1)
+
 pos3d = nx.spring_layout(g, seed=1, iterations=50, dim=3)
 pos2d = {k: v[:2] for k, v in pos3d.items()}
-# nx.draw(g, pos=pos2d)
-# plt.show()
-
-positions = np.array(list(pos3d.values()))
-
-sg = SpatialGraph(nodes=nodes, node_positions=positions, edges=edges)
-sg.plot()
-
-sgd=sg.create_spatial_graph_diagram()
-print(sgd.normalized_yamada_polynomial())
-
-points = np.array(list(pos2d.values()))
-
-tri = Delaunay(points)
-plt.triplot(points[:,0], points[:,1], tri.simplices)
-plt.plot(points[:,0], points[:,1], 'o')
+nx.draw(g, pos=pos2d)
 plt.show()
+
+
+
+
+# positions = np.array(list(pos3d.values()))
+#
+# sg = SpatialGraph(nodes=nodes, node_positions=positions, edges=edges)
+# sg.plot()
+#
+# sgd=sg.create_spatial_graph_diagram()
+# print(sgd.normalized_yamada_polynomial())
+#
+# points = np.array(list(pos2d.values()))
+#
+# tri = Delaunay(points)
+# plt.triplot(points[:,0], points[:,1], tri.simplices)
+# plt.plot(points[:,0], points[:,1], 'o')
+# plt.show()
 
 
 # hull = ConvexHull(positions_2d)
