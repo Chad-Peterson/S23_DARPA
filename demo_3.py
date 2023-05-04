@@ -7,19 +7,6 @@ from yamada import SpatialGraph, SpatialGraphDiagram
 
 nodes = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h','ab', 'ad', 'ae', 'bc', 'bf', 'cd', 'cg', 'dh', 'ef', 'eh', 'fg', 'gh']
 
-# edges = [(component_a, waypoint_ab), (waypoint_ab, component_b),
-#          (component_a, waypoint_ad), (waypoint_ad, component_d),
-#          (component_a, waypoint_ae), (waypoint_ae, component_e),
-#          (component_b, waypoint_bc), (waypoint_bc, component_c),
-#          (component_b, waypoint_bf), (waypoint_bf, component_f),
-#          (component_c, waypoint_cd), (waypoint_cd, component_d),
-#          (component_c, waypoint_cg), (waypoint_cg, component_g),
-#          (component_d, waypoint_dh), (waypoint_dh, component_h),
-#          (component_e, waypoint_ef), (waypoint_ef, component_f),
-#          (component_e, waypoint_eh), (waypoint_eh, component_h),
-#          (component_f, waypoint_fg), (waypoint_fg, component_g),
-#          (component_g, waypoint_gh), (waypoint_gh, component_h)]
-
 edges = [('a', 'ab'), ('ab', 'b'),
             ('a', 'ad'), ('ad', 'd'),
             ('a', 'ae'), ('ae', 'e'),
@@ -58,26 +45,26 @@ g = nx.Graph()
 g.add_nodes_from(nodes)
 g.add_edges_from(edges)
 
-pos2d = {k: v[:2] for k, v in pos.items()}
-nx.draw(g, pos=pos2d)
-plt.show()
+# pos2d = {k: v[:2] for k, v in pos.items()}
+# nx.draw(g, pos=pos2d)
+# plt.show()
 
 
-node_xyz = np.array([pos[v] for v in sorted(g)])
-edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
+# node_xyz = np.array([pos[v] for v in sorted(g)])
+# edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
+#
+# fig = plt.figure()
+# ax = fig.add_subplot(111, projection="3d")
+#
+# # Plot the nodes - alpha is scaled by "depth" automatically
+# ax.scatter(*node_xyz.T, s=100, ec="w")
+#
+#
+# # Plot the edges
+# for vizedge in edge_xyz:
+#     ax.plot(*vizedge.T, color="tab:gray")
 
-fig = plt.figure()
-ax = fig.add_subplot(111, projection="3d")
-
-# Plot the nodes - alpha is scaled by "depth" automatically
-ax.scatter(*node_xyz.T, s=100, ec="w")
-
-
-# Plot the edges
-for vizedge in edge_xyz:
-    ax.plot(*vizedge.T, color="tab:gray")
-
-plt.show()
+# plt.show()
 
 
 
@@ -85,7 +72,7 @@ def subdivide_edge(g, edge, pos, n=3):
     u, v = edge
     g.remove_edge(u, v)
 
-    nodes = [f"{u}{v}{i}" for i in range(n)]
+    nodes = [f"{u}{v}{i}" for i in range(1, n)]
 
     # Add the initial and final nodes
     nodes.insert(0, u)
@@ -93,32 +80,61 @@ def subdivide_edge(g, edge, pos, n=3):
 
     nx.add_path(g, nodes)
 
+    for i in range(1, n):
+        g.add_node(f"{u}{v}{i}")
+        pos[f"{u}{v}{i}"] = pos[u] + (pos[v] - pos[u]) * i / n
+
+    return g, pos
 
 
-    # for i in range(1, n):
-    #     g.add_node(f"{u}{v}{i}")
-    #     pos[f"{u}{v}{i}"] = pos[u] + (pos[v] - pos[u]) * i / n
-    # g.remove_edge(u, v)
-    #
-    # for i in range(1, n):
-    #     g.add_edge(f"{u}{v}{i-1}", f"{u}{v}{i}")
-    # return g, pos
+
+def subdivide_edges(g, pos, n=3):
+    for edge in list(g.edges()):
+        g, pos = subdivide_edge(g, edge, pos, n=n)
+    return g, pos
+
+g, pos = subdivide_edges(g, pos, n=3)
+
+node_xyz = np.array([pos[v] for v in sorted(g)])
+edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
+
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection="3d")
+
+# Plot the nodes - alpha is scaled by "depth" automatically
+ax.scatter(*node_xyz.T, s=100, ec="w")
+
+for vizedge in edge_xyz:
+    ax.plot(*vizedge.T, color="tab:gray")
+
+plt.show()
+
+
+# nx.set_edge_attributes(g, 5, "weight")
+
+pos = nx.spring_layout(g, seed=1, iterations=50, dim=3, pos=pos)
+
+node_xyz = np.array([pos[v] for v in sorted(g)])
+edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
+
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection="3d")
+
+# Plot the nodes - alpha is scaled by "depth" automatically
+ax.scatter(*node_xyz.T, s=100, ec="w")
+
+for vizedge in edge_xyz:
+    ax.plot(*vizedge.T, color="tab:gray")
+
+plt.show()
+
+
+# sg = SpatialGraph(nodes=list(g.nodes), edges=list(g.edges), node_positions=node_xyz)
 #
+# sg.plot()
 #
-# def subdivide_edges(g, pos, n=3):
-#     for edge in list(g.edges()):
-#         g, pos = subdivide_edge(g, edge, pos, n=n)
-#     return g, pos
-#
-# g, pos = subdivide_edges(g, pos, n=3)
-#
-# node_xyz = [pos[v] for v in sorted(g)]
-# edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
-#
-#
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection="3d")
-#
-# # Plot the nodes - alpha is scaled by "depth" automatically
-# ax.scatter(*node_xyz.T, s=100, ec="w")
-# plt.show()
+# sgd = sg.create_spatial_graph_diagram()
+# yp = sgd.normalized_yamada_polynomial()
+# print("Yamada polynomial: {}".format(yp))
