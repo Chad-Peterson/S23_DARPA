@@ -45,14 +45,21 @@ g = nx.Graph()
 g.add_nodes_from(nodes)
 g.add_edges_from(edges)
 
+
+
 # pos2d = {k: v[:2] for k, v in pos.items()}
 # nx.draw(g, pos=pos2d)
 # plt.show()
 
 
-# node_xyz = np.array([pos[v] for v in sorted(g)])
-# edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
-#
+node_xyz = np.array([pos[v] for v in sorted(g)])
+edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
+
+sg = SpatialGraph(nodes=sorted(list(g.nodes)), edges=list(g.edges), node_positions=node_xyz)
+sgd = sg.create_spatial_graph_diagram()
+yp = sgd.normalized_yamada_polynomial()
+print("Yamada polynomial before: {}".format(yp))
+
 # fig = plt.figure()
 # ax = fig.add_subplot(111, projection="3d")
 #
@@ -131,10 +138,10 @@ for vizedge in edge_xyz:
 plt.show()
 
 
-# sg = SpatialGraph(nodes=list(g.nodes), edges=list(g.edges), node_positions=node_xyz)
-#
-# sg.plot()
-#
-# sgd = sg.create_spatial_graph_diagram()
-# yp = sgd.normalized_yamada_polynomial()
-# print("Yamada polynomial: {}".format(yp))
+sg = SpatialGraph(nodes=sorted(list(g.nodes)), edges=list(g.edges), node_positions=node_xyz)
+
+sg.plot()
+
+sgd = sg.create_spatial_graph_diagram()
+yp = sgd.normalized_yamada_polynomial()
+print("Yamada polynomial after:  {}".format(yp))
