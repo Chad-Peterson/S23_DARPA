@@ -527,14 +527,94 @@ node_positions = np.array([[80.0, 80.0, 30.0],
                            [21.05263157894737, 78.94736842105263, 68.42105263157896],
                            [20.0, 80.0, 70.0]])
 
-np.random.seed(2)
+# np.random.seed(2)
+#
+# sg = SpatialGraph(nodes=nodes, edges=edges, node_positions=node_positions)
+#
+# sg.plot()
+#
+# sgd = sg.create_spatial_graph_diagram()
+#
+# yp = sgd.normalized_yamada_polynomial()
+#
+# print("Yamada polynomial: {}".format(yp))
 
-sg = SpatialGraph(nodes=nodes, edges=edges, node_positions=node_positions)
+g = nx.Graph()
+g.add_nodes_from(nodes)
+g.add_edges_from(edges)
+
+pos = {node: position for node, position in zip(nodes, node_positions)}
+
+
+
+
+def subdivide_edge(g, edge, pos, n=3):
+    u, v = edge
+    g.remove_edge(u, v)
+
+    nodes = [f"{u}{v}{i}" for i in range(1, n)]
+
+    # Add the initial and final nodes
+    nodes.insert(0, u)
+    nodes.append(v)
+
+    nx.add_path(g, nodes)
+
+    for i in range(1, n):
+        g.add_node(f"{u}{v}{i}")
+        pos[f"{u}{v}{i}"] = pos[u] + (pos[v] - pos[u]) * i / n
+
+    return g, pos
+
+
+
+def subdivide_edges(g, pos, n=1):
+    for edge in list(g.edges()):
+        g, pos = subdivide_edge(g, edge, pos, n=n)
+    return g, pos
+
+# g, pos = subdivide_edges(g, pos, n=3)
+
+node_xyz = np.array([pos[v] for v in sorted(g)])
+edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
+
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection="3d")
+
+# Plot the nodes - alpha is scaled by "depth" automatically
+ax.scatter(*node_xyz.T, s=100, ec="w")
+
+for vizedge in edge_xyz:
+    ax.plot(*vizedge.T, color="tab:gray")
+
+plt.show()
+
+
+# nx.set_edge_attributes(g, 5, "weight")
+
+pos = nx.spring_layout(g, seed=1, iterations=50, dim=3, pos=pos)
+
+node_xyz = np.array([pos[v] for v in sorted(g)])
+edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
+
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection="3d")
+
+# Plot the nodes - alpha is scaled by "depth" automatically
+ax.scatter(*node_xyz.T, s=100, ec="w")
+
+for vizedge in edge_xyz:
+    ax.plot(*vizedge.T, color="tab:gray")
+
+plt.show()
+
+
+sg = SpatialGraph(nodes=sorted(list(g.nodes)), edges=list(g.edges), node_positions=node_xyz)
 
 sg.plot()
 
 sgd = sg.create_spatial_graph_diagram()
-
 yp = sgd.normalized_yamada_polynomial()
-
-print("Yamada polynomial: {}".format(yp))
+print("Yamada polynomial after:  {}".format(yp))
