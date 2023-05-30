@@ -1,20 +1,30 @@
+import os
+import json
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from yamada import SpatialGraph, generate_isomorphism
+from mpl_toolkits.mplot3d import Axes3D
+from scipy.spatial.distance import cdist
+from sklearn.cluster import KMeans
+
+from yamada import SpatialGraph, generate_isomorphism, extract_graph_from_json_file
 from yamada.enumeration import enumerate_yamada_classes
 from yamada.visualization import position_spatial_graphs_in_3D
 
 
+# Obtain the local path of this example's directory
+directory = os.path.dirname(__file__) + '/sample_topologies/'
 
-
+# Define the JSON file location
+filepath = directory + "G6/C1/G6C1I0.json"
+nodes, node_positions, edges = extract_graph_from_json_file(filepath)
 
 
 # Define the nodes and edges of a cube
-nodes = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-edges = [('a', 'b'), ('a', 'd'), ('a', 'e'), ('b', 'c'), ('b', 'f'), ('c', 'd'),
-         ('c', 'g'), ('d', 'h'), ('e', 'f'), ('e', 'h'), ('f', 'g'), ('g', 'h')]
+# nodes = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+# edges = [('a', 'b'), ('a', 'd'), ('a', 'e'), ('b', 'c'), ('b', 'f'), ('c', 'd'),
+#          ('c', 'g'), ('d', 'h'), ('e', 'f'), ('e', 'h'), ('f', 'g'), ('g', 'h')]
 
 # Create a networkx graph
 g = nx.Graph()
@@ -25,25 +35,28 @@ g.add_edges_from(edges)
 # plt.show()
 
 # Enumerate the Yamada classes
-plantri_directory   = "./plantri53/"
-number_of_crossings = 2
+# plantri_directory   = "./plantri53/"
+# number_of_crossings = 2
+#
+# unique_spatial_topologies, number_topologies = enumerate_yamada_classes(plantri_directory, g, number_of_crossings)
+#
+# # Create near-planar geometric realizations of each UST
+# sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
+#
+# spatial_graphs = []
+# for sg_input in sg_inputs:
+#     sg = SpatialGraph(*sg_input)
+#     spatial_graphs.append(sg)
+#     sg.plot()
+#     sgd = sg.create_spatial_graph_diagram()
+#     yp = sgd.normalized_yamada_polynomial()
+#     print(yp)
 
-unique_spatial_topologies, number_topologies = enumerate_yamada_classes(plantri_directory, g, number_of_crossings)
-
-# Create near-planar geometric realizations of each UST
-sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
-
-spatial_graphs = []
-for sg_input in sg_inputs:
-    sg = SpatialGraph(*sg_input)
-    spatial_graphs.append(sg)
-    sg.plot()
-    sgd = sg.create_spatial_graph_diagram()
-    yp = sgd.normalized_yamada_polynomial()
-    print(yp)
+sg1 = SpatialGraph(nodes=nodes, node_positions=node_positions, edges=edges)
+spatial_graphs = [sg1]
 
 
-# Generate isomorphisms for the second UST
+# Generate isomorphisms for the first UST
 sg2 = spatial_graphs[0]
 nodes = sg2.nodes
 node_positions = sg2.node_positions
@@ -57,6 +70,13 @@ gg.add_edges_from(sg2.edges)
 
 node_xyz = np.array([pos[v] for v in sorted(gg)])
 edge_xyz = np.array([(pos[u], pos[v]) for u, v in gg.edges()])
+
+graphs = []
+positions = []
+for i in range(10):
+    g, pos = generate_isomorphism(gg, pos, n=7, rotate=True)
+    graphs.append(g)
+    positions.append(pos)
 
 
 g2, pos = generate_isomorphism(gg, pos, n=7, rotate=True)
@@ -87,9 +107,7 @@ plt.show()
 
 
 
-from mpl_toolkits.mplot3d import Axes3D
-from scipy.spatial.distance import cdist
-from sklearn.cluster import KMeans
+
 
 def plot_nodes_with_colors(node_positions, ref_points_with_colors):
     # Convert node positions and reference points to numpy arrays
@@ -126,7 +144,21 @@ def k_nearest_neighbors(graph, positions, k=3):
     return nearest_neighbors
 
 
-ref_points_with_colors = [([-1, -1, -1], "r"), ([1, 1, 1], "y"), ([1, -1, 1], "b")]
+# ref_points_with_colors = [([-1, -1, -1], "r"),
+#                           ([-0.9, -1, -1], "r"),
+#                           ([-0.8, -1, -1], "r"),
+#                           ([-0.7, -1, -1], "r"),
+#                           ([-0.6, -1, -1], "r"),
+#                           ([-0.5, -1, -1], "r"),
+#                           ([1, 1, 1], "y"),
+#                           ([1, -1, 1], "b")]
+
+hot_source    = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
+medium_source = [([1, 1, 1], "y")]
+cold_source   = [([1, -1, 1], "b")]
+
+ref_points_with_colors = hot_source + medium_source + cold_source
+
 plot_nodes_with_colors(node_xyz, ref_points_with_colors)
 #
 #
