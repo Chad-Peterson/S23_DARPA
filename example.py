@@ -14,19 +14,17 @@ from yamada.visualization import position_spatial_graphs_in_3D
 
 
 # original_graph = [(0, 3), (0, 4), (1, 2), (1, 3), (1, 4), (2, 0), (2, 5), (3, 5), (4, 5)]
-original_graph = [(0, 1), (0, 3), (0, 8), (1, 8), (1, 9), (2, 6), (2, 9), (3, 2), (3, 4),
-                  (4, 5), (4, 7), (5, 6), (5, 9), (7, 6), (8, 7)]
-og = nx.MultiGraph()
-og.add_edges_from(original_graph)
-
-
-
+# original_graph = [(0, 1), (0, 3), (0, 8), (1, 8), (1, 9), (2, 6), (2, 9), (3, 2), (3, 4),
+#                   (4, 5), (4, 7), (5, 6), (5, 9), (7, 6), (8, 7)]
+# og = nx.MultiGraph()
+# og.add_edges_from(original_graph)
 
 # Obtain the local path of this example's directory
 directory = os.path.dirname(__file__) + '/sample_topologies/'
 
 # Define the JSON file location
-filepath = directory + "G6/C1/G6C1I0.json"
+# filepath = directory + "G6/C1/G6C1I0.json"
+filepath = directory + "G10/C1/G10C1I0.json"
 nodes, node_positions, edges = extract_graph_from_json_file(filepath)
 
 
@@ -67,28 +65,28 @@ spatial_graphs = [sg1]
 
 # Generate isomorphisms for the first UST
 sg2 = spatial_graphs[0]
-nodes = sg2.nodes
-node_positions = sg2.node_positions
+nodes2 = sg2.nodes
+node_positions2 = sg2.node_positions
 
 # Create a node positions dictionary
-pos = {node: np.array(position) for node, position in zip(nodes, node_positions)}
+pos = {node: np.array(position) for node, position in zip(nodes2, node_positions2)}
 
 gg = nx.Graph()
 gg.add_nodes_from(sg2.nodes)
 gg.add_edges_from(sg2.edges)
+#
+# node_xyz = np.array([pos[v] for v in sorted(gg)])
+# edge_xyz = np.array([(pos[u], pos[v]) for u, v in gg.edges()])
 
-node_xyz = np.array([pos[v] for v in sorted(gg)])
-edge_xyz = np.array([(pos[u], pos[v]) for u, v in gg.edges()])
-
-graphs = []
-positions = []
-for i in range(10):
-    g, pos = generate_isomorphism(gg, pos, n=7, rotate=True)
-    graphs.append(g)
-    positions.append(pos)
+# graphs = []
+# positions = []
+# for i in range(10):
+#     g, pos = generate_isomorphism(gg, pos, n=7, rotate=True)
+#     graphs.append(g)
+#     positions.append(pos)
 
 
-g2, pos = generate_isomorphism(gg, pos, n=7, rotate=True)
+g2, pos = generate_isomorphism(gg, pos, n=7, rotate=False)
 
 node_xyz = np.array([pos[v] for v in sorted(g2)])
 edge_xyz = np.array([(pos[u], pos[v]) for u, v in g2.edges()])
@@ -118,7 +116,7 @@ plt.show()
 
 
 
-def plot_nodes_with_colors(original_graph_nodes, new_graph_positions, node_positions, ref_points_with_colors):
+def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_colors):
 
     # Convert node positions and reference points to numpy arrays
     node_xyz = np.array(node_positions)
@@ -140,26 +138,26 @@ def plot_nodes_with_colors(original_graph_nodes, new_graph_positions, node_posit
 
 
     # Plot the nodes as larger cubes
-    ng_nodes = list(new_graph_positions.keys())
-    comp_node_xyz = []
-    for node in ng_nodes:
-        if node in original_graph_nodes:
-            node_i_xyz = np.array(new_graph_positions[node])
-            comp_node_xyz.append(node_i_xyz)
+    # ng_nodes = list(new_graph_positions.keys())
+    # comp_node_xyz = []
+    # for node in ng_nodes:
+    #     if node in original_graph_nodes:
+    #         node_i_xyz = np.array(new_graph_positions[node])
+    #         comp_node_xyz.append(node_i_xyz)
             # Plot the node as a cube
             # ax.scatter(*node_i_xyz.T, s=500, ec="w", c="k")
 
-    comp_node_xyz = np.array(comp_node_xyz)
+    # comp_node_xyz = np.array(comp_node_xyz)
 
     # Compute the distances between each node and each reference point
-    distances2 = np.sqrt(((comp_node_xyz[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
+    distances2 = np.sqrt(((comp_positions[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
 
     # Find the index of the nearest reference point for each node
     nearest_ref_indices2 = np.argmin(distances2, axis=1)
 
     for i, ref_color in enumerate(ref_colors):
         mask2 = nearest_ref_indices2 == i
-        ax.scatter(*comp_node_xyz[mask2].T, s=500, ec="w", c=ref_color)
+        ax.scatter(*comp_positions[mask2].T, s=750, ec="w", c=ref_color)
 
 
     for ref_point, ref_color in zip(ref_xyz, ref_colors):
@@ -197,9 +195,11 @@ cold_source   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
 ref_points_with_colors = hot_source_1 + hot_source_2 + medium_source + cold_source
 
 # Rename graph nodes from ints to strings
-og_nodes = [str(n) for n in og.nodes()]
+comp_nodes = [node for node in nodes if 'V' in node]
+comp_xyz = np.array([pos[v] for v in comp_nodes])
 
-plot_nodes_with_colors(og_nodes, pos, node_xyz, ref_points_with_colors)
+
+plot_nodes_with_colors(comp_xyz, node_xyz, ref_points_with_colors)
 #
 #
 my_neighbors = k_nearest_neighbors(g2, pos)
