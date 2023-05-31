@@ -13,6 +13,15 @@ from yamada.enumeration import enumerate_yamada_classes
 from yamada.visualization import position_spatial_graphs_in_3D
 
 
+# original_graph = [(0, 3), (0, 4), (1, 2), (1, 3), (1, 4), (2, 0), (2, 5), (3, 5), (4, 5)]
+original_graph = [(0, 1), (0, 3), (0, 8), (1, 8), (1, 9), (2, 6), (2, 9), (3, 2), (3, 4),
+                  (4, 5), (4, 7), (5, 6), (5, 9), (7, 6), (8, 7)]
+og = nx.MultiGraph()
+og.add_edges_from(original_graph)
+
+
+
+
 # Obtain the local path of this example's directory
 directory = os.path.dirname(__file__) + '/sample_topologies/'
 
@@ -109,7 +118,8 @@ plt.show()
 
 
 
-def plot_nodes_with_colors(node_positions, ref_points_with_colors):
+def plot_nodes_with_colors(original_graph_nodes, new_graph, node_positions, ref_points_with_colors):
+
     # Convert node positions and reference points to numpy arrays
     node_xyz = np.array(node_positions)
     ref_xyz = np.array([p[0] for p in ref_points_with_colors])
@@ -129,6 +139,17 @@ def plot_nodes_with_colors(node_positions, ref_points_with_colors):
         ax.scatter(*node_xyz[mask].T, s=100, ec="w", c=ref_color)
     for ref_point, ref_color in zip(ref_xyz, ref_colors):
         ax.scatter(*ref_point.T, s=100, ec="w", c=ref_color)
+
+    # Plot the nodes as larger cubes
+    ng_nodes = list(new_graph.nodes())
+    for i, node in enumerate(ng_nodes):
+        if node in original_graph_nodes:
+            node_i_xyz = node_positions[i]
+
+            # Plot the node as a cube
+            ax.scatter(*node_i_xyz.T, s=500, ec="w", c="k")
+
+
     plt.show()
 
 
@@ -153,13 +174,17 @@ def k_nearest_neighbors(graph, positions, k=3):
 #                           ([1, 1, 1], "y"),
 #                           ([1, -1, 1], "b")]
 
-hot_source    = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
-medium_source = [([1, 1, 1], "y")]
-cold_source   = [([1, -1, 1], "b")]
+hot_source_1  = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
+hot_source_2  = [((-1, -1, z), "r") for z in np.linspace(-1, 1, 20)]
+medium_source = [((1, 1, z), "y") for z in np.linspace(-1, 1, 20)]
+cold_source   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
 
-ref_points_with_colors = hot_source + medium_source + cold_source
+ref_points_with_colors = hot_source_1 + hot_source_2 + medium_source + cold_source
 
-plot_nodes_with_colors(node_xyz, ref_points_with_colors)
+# Rename graph nodes from ints to strings
+og_nodes = [str(n) for n in og.nodes()]
+
+plot_nodes_with_colors(og_nodes, g2, node_xyz, ref_points_with_colors)
 #
 #
 my_neighbors = k_nearest_neighbors(g2, pos)
