@@ -8,7 +8,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.spatial.distance import cdist
 from sklearn.cluster import KMeans
 
-from yamada import SpatialGraph, generate_isomorphism, extract_graph_from_json_file
+from utils import generate_new_geometric_realization, k_nearest_neighbors
+from yamada import SpatialGraph, extract_graph_from_json_file
 from yamada.enumeration import enumerate_yamada_classes
 from yamada.visualization import position_spatial_graphs_in_3D
 
@@ -24,7 +25,8 @@ directory = os.path.dirname(__file__) + '/sample_topologies/'
 
 # Define the JSON file location
 # filepath = directory + "G6/C1/G6C1I0.json"
-filepath = directory + "G10/C1/G10C1I0.json"
+# filepath = directory + "G10/C1/G10C1I0.json"
+filepath = directory + "G10/C4/G10C4I0.json"
 nodes, node_positions, edges = extract_graph_from_json_file(filepath)
 
 
@@ -86,7 +88,7 @@ gg.add_edges_from(sg2.edges)
 #     positions.append(pos)
 
 
-g2, pos = generate_isomorphism(gg, pos, n=7, rotate=False)
+g2, pos = generate_new_geometric_realization(gg, pos, n=20, rotate=True)
 
 node_xyz = np.array([pos[v] for v in sorted(g2)])
 edge_xyz = np.array([(pos[u], pos[v]) for u, v in g2.edges()])
@@ -103,6 +105,13 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection="3d")
 
 ax.scatter(*node_xyz.T, s=100, ec="w")
+
+# Rename graph nodes from ints to strings
+comp_nodes = [node for node in nodes if 'V' in node]
+comp_xyz = np.array([pos[v] for v in comp_nodes])
+
+# Plot the component nodes
+ax.scatter(*comp_xyz.T, s=500, ec="w", c="tab:blue")
 
 for vizedge in edge_xyz:
     ax.plot(*vizedge.T, color="tab:gray")
@@ -136,19 +145,6 @@ def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_color
         mask = nearest_ref_indices == i
         ax.scatter(*node_xyz[mask].T, s=100, ec="w", c=ref_color)
 
-
-    # Plot the nodes as larger cubes
-    # ng_nodes = list(new_graph_positions.keys())
-    # comp_node_xyz = []
-    # for node in ng_nodes:
-    #     if node in original_graph_nodes:
-    #         node_i_xyz = np.array(new_graph_positions[node])
-    #         comp_node_xyz.append(node_i_xyz)
-            # Plot the node as a cube
-            # ax.scatter(*node_i_xyz.T, s=500, ec="w", c="k")
-
-    # comp_node_xyz = np.array(comp_node_xyz)
-
     # Compute the distances between each node and each reference point
     distances2 = np.sqrt(((comp_positions[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
 
@@ -166,44 +162,32 @@ def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_color
     plt.show()
 
 
-def k_nearest_neighbors(graph, positions, k=3):
-    nodes = sorted(graph.nodes())
-    node_xyz = np.array([positions[v] for v in nodes])
-    dist_matrix = cdist(node_xyz, node_xyz)
-    nearest_neighbors = {}
-    for i, node in enumerate(nodes):
-        distances = dist_matrix[i]
-        neighbors = np.argsort(distances)[1:k+1]
-        nearest_neighbors[node] = [nodes[n] for n in neighbors]
-    return nearest_neighbors
+# def k_nearest_neighbors(graph, positions, k=3):
+#     nodes = sorted(graph.nodes())
+#     node_xyz = np.array([positions[v] for v in nodes])
+#     dist_matrix = cdist(node_xyz, node_xyz)
+#     nearest_neighbors = {}
+#     for i, node in enumerate(nodes):
+#         distances = dist_matrix[i]
+#         neighbors = np.argsort(distances)[1:k+1]
+#         nearest_neighbors[node] = [nodes[n] for n in neighbors]
+#     return nearest_neighbors
 
 
-# ref_points_with_colors = [([-1, -1, -1], "r"),
-#                           ([-0.9, -1, -1], "r"),
-#                           ([-0.8, -1, -1], "r"),
-#                           ([-0.7, -1, -1], "r"),
-#                           ([-0.6, -1, -1], "r"),
-#                           ([-0.5, -1, -1], "r"),
-#                           ([1, 1, 1], "y"),
-#                           ([1, -1, 1], "b")]
-
+# Define external physics sources
 hot_source_1  = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
 hot_source_2  = [((-1, -1, z), "r") for z in np.linspace(-1, 1, 20)]
-medium_source = [((1, 1, z), "y") for z in np.linspace(-1, 1, 20)]
+medium_source = [((1, 1, z), "y") for z in np.linspace(-1, 0, 10)]
 cold_source   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
 
 ref_points_with_colors = hot_source_1 + hot_source_2 + medium_source + cold_source
 
-# Rename graph nodes from ints to strings
-comp_nodes = [node for node in nodes if 'V' in node]
-comp_xyz = np.array([pos[v] for v in comp_nodes])
+
 
 
 plot_nodes_with_colors(comp_xyz, node_xyz, ref_points_with_colors)
-#
-#
+
+
 my_neighbors = k_nearest_neighbors(g2, pos)
-#
+
 print(my_neighbors)
-#
-# print('1')
