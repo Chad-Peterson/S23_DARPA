@@ -8,7 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.spatial.distance import cdist
 from sklearn.cluster import KMeans
 
-from utils import generate_new_geometric_realization, k_nearest_neighbors
+from src.task1.utils import generate_new_geometric_realization, k_nearest_neighbors
 from yamada import SpatialGraph, extract_graph_from_json_file
 from yamada.enumeration import enumerate_yamada_classes
 from yamada.visualization import position_spatial_graphs_in_3D
@@ -162,17 +162,6 @@ def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_color
     plt.show()
 
 
-# def k_nearest_neighbors(graph, positions, k=3):
-#     nodes = sorted(graph.nodes())
-#     node_xyz = np.array([positions[v] for v in nodes])
-#     dist_matrix = cdist(node_xyz, node_xyz)
-#     nearest_neighbors = {}
-#     for i, node in enumerate(nodes):
-#         distances = dist_matrix[i]
-#         neighbors = np.argsort(distances)[1:k+1]
-#         nearest_neighbors[node] = [nodes[n] for n in neighbors]
-#     return nearest_neighbors
-
 
 # Define external physics sources
 hot_source_1  = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
@@ -187,7 +176,7 @@ ref_points_with_colors = hot_source_1 + hot_source_2 + medium_source + cold_sour
 
 plot_nodes_with_colors(comp_xyz, node_xyz, ref_points_with_colors)
 
-
-my_neighbors = k_nearest_neighbors(g2, pos)
+important_components = ['V1','V4','V7']
+my_neighbors = k_nearest_neighbors(g, pos, important_components, k=3)
 
 print(my_neighbors)
