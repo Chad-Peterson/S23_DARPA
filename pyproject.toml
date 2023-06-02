@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[metadata]
+name = "DARPA_Task-1"
+version = "0.1.0"
+description = "A short description of my package"
+author = "Chad Peterson"
+author_email = "cp44@illinois.edu"
+
+
+[options]
+packages = find:
+install_requires = ["numpy", "scipy", "networkx"]
+python_requires = ">=3.8"
+
+[options.packages.find]
+exclude = ["tests"]
