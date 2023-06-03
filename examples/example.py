@@ -4,13 +4,11 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from mpl_toolkits.mplot3d import Axes3D
-from scipy.spatial.distance import cdist
-from sklearn.cluster import KMeans
+# from mpl_toolkits.mplot3d import Axes3D
 
-from task1.utils import generate_new_geometric_realization, k_nearest_neighbors
-from yamada import SpatialGraph, extract_graph_from_json_file
-from yamada.enumeration import enumerate_yamada_classes
+from task1 import generate_new_geometric_realization, enumerate_yamada_classes, k_nearest_neighbors
+
+from yamada import SpatialGraph
 from yamada.visualization import position_spatial_graphs_in_3D
 
 # Define the system architecture
@@ -31,14 +29,14 @@ nx.draw(sa_graph, with_labels=True)
 plt.show()
 
 # Enumerate the Yamada classes
-# plantri_directory   = "./plantri53/"
-# number_of_crossings = 2
-#
-# unique_spatial_topologies, number_topologies = enumerate_yamada_classes(plantri_directory, g, number_of_crossings)
-#
-# # Create near-planar geometric realizations of each UST
-# sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
-#
+number_of_crossings = 3
+
+unique_spatial_topologies, number_topologies = enumerate_yamada_classes(sa_graph, number_of_crossings)
+
+# Create near-planar geometric realizations of each UST
+sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
+
+
 # spatial_graphs = []
 # for sg_input in sg_inputs:
 #     sg = SpatialGraph(*sg_input)
