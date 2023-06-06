@@ -6,37 +6,49 @@ import matplotlib.pyplot as plt
 
 # from mpl_toolkits.mplot3d import Axes3D
 
-from task1 import generate_new_geometric_realization, enumerate_yamada_classes, k_nearest_neighbors
+from task1 import isomorphism, enumerate_yamada_classes, k_nearest_neighbors
 
-from yamada import SpatialGraph
+from yamada import SpatialGraph, extract_graph_from_json_file
 from yamada.visualization import position_spatial_graphs_in_3D
+
+# Archived examples
+# Enumerate the Yamada classes for the complex example takes approximately 70 minutes.
+# This code snippet loads the results from a previous run for convenience.
+directory        = os.path.dirname(__file__) + '/sample_topologies/'
+filepath_simple  = directory + "G6/C1/G6C1I0.json"
+filepath_complex = directory + "G10/C4/G10C4I7.json"
+nodes, node_positions, edges = extract_graph_from_json_file(filepath_simple)
+sg_0  = SpatialGraph(nodes=nodes, node_positions=node_positions, edges=edges)
+sgd_0 = sg_0.create_spatial_graph_diagram()
+unique_spatial_topologies = {'ust_0': sgd_0}
+spatial_graphs = [sg_0]
+
 
 # Define the system architecture
 
 # Simple system architecture
-sa = [(0, 3), (0, 4), (1, 2), (1, 3), (1, 4), (2, 0), (2, 5), (3, 5), (4, 5)]
+# sa = [(0, 3), (0, 4), (1, 2), (1, 3), (1, 4), (2, 0), (2, 5), (3, 5), (4, 5)]
 
 # Complex system architecture
 # sa = [(0, 1), (0, 3), (0, 8), (1, 8), (1, 9), (2, 6), (2, 9), (3, 2),
 #       (3, 4), (4, 5), (4, 7), (5, 6), (5, 9), (7, 6), (8, 7)]
 
 # Create a networkx graph from the system architecture
-sa_graph = nx.MultiGraph()
-sa_graph.add_edges_from(sa)
+# sa_graph = nx.MultiGraph()
+# sa_graph.add_edges_from(sa)
 
+# nx.draw(sa_graph, with_labels=True)
+# plt.show()
 
-nx.draw(sa_graph, with_labels=True)
-plt.show()
 
 # Enumerate the Yamada classes
-number_of_crossings = 3
-
-unique_spatial_topologies, number_topologies = enumerate_yamada_classes(sa_graph, number_of_crossings)
+# number_of_crossings = 1
+# unique_spatial_topologies, number_topologies = enumerate_yamada_classes(sa_graph, number_of_crossings)
 
 # Create near-planar geometric realizations of each UST
-sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
+# sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
 
-
+# Plot each unique geometric realization and print it's Yamada polynomial
 # spatial_graphs = []
 # for sg_input in sg_inputs:
 #     sg = SpatialGraph(*sg_input)
@@ -46,8 +58,6 @@ sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
 #     yp = sgd.normalized_yamada_polynomial()
 #     print(yp)
 
-# sg1 = SpatialGraph(nodes=nodes, node_positions=node_positions, edges=edges)
-# spatial_graphs = [sg1]
 
 
 # Generate isomorphisms for the first UST
@@ -56,7 +66,7 @@ sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
 # node_positions2 = sg2.node_positions
 
 # Create a node positions dictionary
-# pos = {node: np.array(position) for node, position in zip(nodes2, node_positions2)}
+pos = {node: np.array(position) for node, position in zip(nodes2, node_positions2)}
 
 # gg = nx.Graph()
 # gg.add_nodes_from(sg2.nodes)
@@ -110,41 +120,7 @@ sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
 
 
 
-# def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_colors):
-#
-#     # Convert node positions and reference points to numpy arrays
-#     node_xyz = np.array(node_positions)
-#     ref_xyz = np.array([p[0] for p in ref_points_with_colors])
-#     ref_colors = [p[1] for p in ref_points_with_colors]
-#
-#     # Compute the distances between each node and each reference point
-#     distances = np.sqrt(((node_xyz[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
-#
-#     # Find the index of the nearest reference point for each node
-#     nearest_ref_indices = np.argmin(distances, axis=1)
-#
-#     # Plot the nodes with colors based on their nearest reference point
-#     fig = plt.figure()
-#     ax = fig.add_subplot(111, projection="3d")
-#     for i, ref_color in enumerate(ref_colors):
-#         mask = nearest_ref_indices == i
-#         ax.scatter(*node_xyz[mask].T, s=100, ec="w", c=ref_color)
-#
-#     # Compute the distances between each node and each reference point
-#     distances2 = np.sqrt(((comp_positions[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
-#
-#     # Find the index of the nearest reference point for each node
-#     nearest_ref_indices2 = np.argmin(distances2, axis=1)
-#
-#     for i, ref_color in enumerate(ref_colors):
-#         mask2 = nearest_ref_indices2 == i
-#         ax.scatter(*comp_positions[mask2].T, s=750, ec="w", c=ref_color)
-#
-#
-#     for ref_point, ref_color in zip(ref_xyz, ref_colors):
-#         ax.scatter(*ref_point.T, s=100, ec="w", c=ref_color)
-#
-#     plt.show()
+
 
 #
 #

@@ -1,3 +1,9 @@
+"""ENUMERATION
+
+This module contains functions for enumerating Yamada classes (i.e., unique spatial topologies).
+"""
+
+
 import networkx as nx
 import subprocess
 import io
@@ -7,7 +13,7 @@ from yamada.spatial_graph_diagrams import Vertex, Edge, Crossing, SpatialGraphDi
 
 def read_edge_code(stream, size):
     """
-    Read 1 byte form of edge code
+    A helper function that reads a single byte from a stream and returns the corresponding edge code.
     """
     ans = [[]]
     for _ in range(size):
@@ -18,11 +24,26 @@ def read_edge_code(stream, size):
             ans.append([])
     return ans
 
-def shadows_via_plantri_by_edge_codes(num_tri_verts, num_crossings):
-    assert num_tri_verts % 2 == 0
-    vertices = num_tri_verts + num_crossings
-    edges = (3 * num_tri_verts + 4 * num_crossings) // 2
+
+def shadows_via_plantri_by_edge_codes(num_trivalent_vertices, num_crossings):
+    """
+    A function that enumerates the shadows of an abstract graph with a given number of trivalent vertices and
+    crossings. These shadows are in intermediate step toward enumerating Yamada classes.
+
+    Note: This is a wrapper around plantri, which must be installed separately. The plantri executable must be in the
+    current working directory.
+
+    :param num_trivalent_vertices:
+    :param num_crossings:
+    :return:
+    """
+
+    assert num_trivalent_vertices % 2 == 0
+
+    vertices = num_trivalent_vertices + num_crossings
+    edges = (3 * num_trivalent_vertices + 4 * num_crossings) // 2
     faces = 2 - vertices + edges
+
     cmd = ['plantri53/plantri',
            '-p -d',  # simple planar maps, but return the dual
            '-f4',  # maximum valence in the returned dual is <= 4
@@ -33,7 +54,9 @@ def shadows_via_plantri_by_edge_codes(num_tri_verts, num_crossings):
            '%d' % faces]
     proc = subprocess.run(' '.join(cmd), shell=True, capture_output=True)
     stdout = io.BytesIO(proc.stdout)
+
     assert stdout.read(13) == b'>>edge_code<<'
+
     shadows = []
     while True:
         b = stdout.read(1)
@@ -45,7 +68,11 @@ def shadows_via_plantri_by_edge_codes(num_tri_verts, num_crossings):
 
     return shadows
 
+
 class Shadow:
+    """
+    Shadow is a class used to construct a spatial graph diagram from edge codes.
+    """
     def __init__(self, edge_codes):
         self.edge_codes = edge_codes
         self.vertices = [edges for edges in edge_codes if len(edges) == 3]
@@ -79,13 +106,15 @@ class Shadow:
 
         return SpatialGraphDiagram(classes, check=check)
 
+
 def spatial_graph_diagrams_fixed_crossings(G, crossings):
     """
-    Let's start with the theta graph
+    A function that enumerates the spatial graph diagrams with a given underlying graph and number of crossings.
 
-    >>> T = nx.MultiGraph(3*[(0, 1)])
-    >>> len(list(spatial_graph_diagrams_fixed_crossings(T, 3)))
-    2
+    :param G: The underlying graph.
+    :param crossings: The number of crossings.
+    :return: A generator of spatial graph diagrams.
+
     """
     assert all(d == 3 for v, d in G.degree)
     assert all(a != b for a, b in G.edges())
@@ -111,6 +140,13 @@ def spatial_graph_diagrams_fixed_crossings(G, crossings):
 
 
 def enumerate_yamada_classes(G, max_crossings):
+    """
+    A function that enumerates the Yamada classes of a given underlying graph with a given maximum number of crossings.
+    :param G:
+    :param max_crossings:
+    :return:
+    """
+
     examined = 0
     polys = dict()
     for crossings in range(0, max_crossings + 1):
