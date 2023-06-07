@@ -54,9 +54,7 @@ spatial_graphs = [sg_0]
 #     sg = SpatialGraph(*sg_input)
 #     spatial_graphs.append(sg)
 #     sg.plot()
-#     sgd = sg.create_spatial_graph_diagram()
-#     yp = sgd.normalized_yamada_polynomial()
-#     print(yp)
+
 
 
 
@@ -66,14 +64,14 @@ spatial_graphs = [sg_0]
 # node_positions2 = sg2.node_positions
 
 # Create a node positions dictionary
-pos = {node: np.array(position) for node, position in zip(nodes2, node_positions2)}
+pos = {node: np.array(position) for node, position in zip(nodes, node_positions)}
 
-# gg = nx.Graph()
-# gg.add_nodes_from(sg2.nodes)
-# gg.add_edges_from(sg2.edges)
-#
-# node_xyz = np.array([pos[v] for v in sorted(gg)])
-# edge_xyz = np.array([(pos[u], pos[v]) for u, v in gg.edges()])
+gg = nx.Graph()
+gg.add_nodes_from(sg_0.nodes)
+gg.add_edges_from(sg_0.edges)
+
+node_xyz = np.array([pos[v] for v in sorted(gg)])
+edge_xyz = np.array([(pos[u], pos[v]) for u, v in gg.edges()])
 
 # graphs = []
 # positions = []
@@ -83,10 +81,10 @@ pos = {node: np.array(position) for node, position in zip(nodes2, node_positions
 #     positions.append(pos)
 
 
-# g2, pos = generate_new_geometric_realization(gg, pos, n=20, rotate=True)
-#
-# node_xyz = np.array([pos[v] for v in sorted(g2)])
-# edge_xyz = np.array([(pos[u], pos[v]) for u, v in g2.edges()])
+g2, pos = isomorphism(gg, pos, n=20, rotate=True)
+
+node_xyz = np.array([pos[v] for v in sorted(g2)])
+edge_xyz = np.array([(pos[u], pos[v]) for u, v in g2.edges()])
 
 # node_xyz = np.array([pos[v] for v in sorted(g)])
 # edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
@@ -95,25 +93,25 @@ pos = {node: np.array(position) for node, position in zip(nodes2, node_positions
 
 
 
-#
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection="3d")
-#
-# ax.scatter(*node_xyz.T, s=100, ec="w")
-#
-# # Rename graph nodes from ints to strings
-# comp_nodes = [node for node in nodes if 'V' in node]
-# comp_xyz = np.array([pos[v] for v in comp_nodes])
-#
-# # Plot the component nodes
-# ax.scatter(*comp_xyz.T, s=500, ec="w", c="tab:blue")
-#
-# for vizedge in edge_xyz:
-#     ax.plot(*vizedge.T, color="tab:gray")
-#
-# plt.show()
-#
-#
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection="3d")
+
+ax.scatter(*node_xyz.T, s=100, ec="w")
+
+# Rename graph nodes from ints to strings
+comp_nodes = [node for node in nodes if 'V' in node]
+comp_xyz = np.array([pos[v] for v in comp_nodes])
+
+# Plot the component nodes
+ax.scatter(*comp_xyz.T, s=500, ec="w", c="tab:blue")
+
+for vizedge in edge_xyz:
+    ax.plot(*vizedge.T, color="tab:gray")
+
+plt.show()
+
+
 
 
 
