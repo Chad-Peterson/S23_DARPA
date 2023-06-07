@@ -1,3 +1,8 @@
+"""GEOMETRIC REALIZATIONS
+
+This module contains functions for generating geometric realizations of graphs.
+"""
+
 import networkx as nx
 
 import numpy as np

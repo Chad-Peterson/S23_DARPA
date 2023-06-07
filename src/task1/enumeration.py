@@ -14,6 +14,9 @@ from yamada.spatial_graph_diagrams import Vertex, Edge, Crossing, SpatialGraphDi
 def read_edge_code(stream, size):
     """
     A helper function that reads a single byte from a stream and returns the corresponding edge code.
+
+    :param stream: A stream to read from.
+    :param size: The number of bytes to read.
     """
     ans = [[]]
     for _ in range(size):

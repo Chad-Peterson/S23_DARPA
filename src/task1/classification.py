@@ -9,6 +9,22 @@ from scipy.spatial.distance import cdist
 
 
 def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_colors):
+    """
+    Plot nodes with colors based on their nearest reference point.
+
+    :param comp_positions: The positions of the comparison nodes as a 2D array of shape (N, 3).
+    :type comp_positions: array_like
+
+    :param node_positions: The positions of the nodes as a 2D array of shape (M, 3).
+    :type node_positions: array_like
+
+    :param ref_points_with_colors: A list of tuples, where each tuple contains a reference point as a 1D array of shape (3,)
+        and a color as a string. The reference points are used to classify the nodes.
+    :type ref_points_with_colors: list of tuple
+
+    :return: None
+    :rtype: NoneType
+    """
 
     # Convert node positions and reference points to numpy arrays
     node_xyz = np.array(node_positions)
@@ -44,40 +60,6 @@ def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_color
 
     plt.show()
 
-# def plot_nodes_with_colors(node_positions, ref_points_with_colors):
-#     """
-#     Plots a set of nodes in 3D space, with colors based on their nearest reference point.
-#
-#     :param node_positions: A list of (x, y, z) tuples representing the positions of the nodes.
-#     :type node_positions: list of tuples
-#     :param ref_points_with_colors: A list of (x, y, z, color) tuples representing the positions and colors of the reference points.
-#     :type ref_points_with_colors: list of tuples
-#     :return: None
-#     :rtype: None
-#     """
-#     # Implementation details...
-#
-#
-#     # Convert node positions and reference points to numpy arrays
-#     node_xyz = np.array(node_positions)
-#     ref_xyz = np.array([p[0] for p in ref_points_with_colors])
-#     ref_colors = [p[1] for p in ref_points_with_colors]
-#
-#     # Compute the distances between each node and each reference point
-#     distances = np.sqrt(((node_xyz[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
-#
-#     # Find the index of the nearest reference point for each node
-#     nearest_ref_indices = np.argmin(distances, axis=1)
-#
-#     # Plot the nodes with colors based on their nearest reference point
-#     fig = plt.figure()
-#     ax = fig.add_subplot(111, projection="3d")
-#     for i, ref_color in enumerate(ref_colors):
-#         mask = nearest_ref_indices == i
-#         ax.scatter(*node_xyz[mask].T, s=100, ec="w", c=ref_color)
-#     for ref_point, ref_color in zip(ref_xyz, ref_colors):
-#         ax.scatter(*ref_point.T, s=100, ec="w", c=ref_color)
-#     plt.show()
 
 
 def k_nearest_neighbors(graph, positions, important_nodes, k=3):
@@ -86,16 +68,19 @@ def k_nearest_neighbors(graph, positions, important_nodes, k=3):
 
     :param graph: The graph to find nearest neighbors in.
     :type graph: networkx.Graph
+
     :param positions: A dictionary mapping node IDs to (x, y, z) tuples representing their positions.
     :type positions: dict
+
     :param important_nodes: A list of node IDs to find nearest neighbors for.
     :type important_nodes: list
+
     :param k: The number of nearest neighbors to find for each node. Default is 3.
     :type k: int, optional
+
     :return: A dictionary mapping each important node to a list of its k nearest neighbors.
     :rtype: dict
     """
-    # Implementation details...
 
     nodes = sorted(graph.nodes())
     node_xyz = np.array([positions[v] for v in nodes])
