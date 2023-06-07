@@ -2,38 +2,31 @@
 
 ## Installation
 
-This project requires Plantri to be installed. Plantri can be downloaded from [here](http://users.cecs.anu.edu.au/~bdm/plantri/plantri.html). Available via xommand terminal..
+This project requires Python 3; it has been tested on Python 3.10 for Linux. It may be installed locally using the following command in the root directory of the project:
 
-For Linux:
+```bash
+pip install .
+```
 
+Note that this project requires Plantri to be installed in the working directory (i.e., where the run script is located). For convenience, a copy of Plantri is compiled in the "examples" folder to run the examples.
 
-If you have compiled Plantri from source code on Linux, you may need to add the directory containing the Plantri executable to your system's `PATH` environment variable. 
+To install Plantri, follow these steps:
 
-Here are the steps to add the Plantri directory to your `PATH`:
+1. Download the source code from the link above and extract the archive.
 
-1. Determine the directory where the Plantri executable is located. This will depend on where you compiled Plantri and where you installed it. For example, if you compiled Plantri in your home directory and installed it in a subdirectory called `plantri`, the executable might be located at `~/plantri/plantri`.
+Plantri can be downloaded from [here](http://users.cecs.anu.edu.au/~bdm/plantri/plantri.html). The source code is available as a `.tar.gz` archive. Download the archive and extract it to a directory of your choice.
 
-2. Open your shell configuration file. This will depend on which shell you are using. For example, if you are using the Bash shell, you can open the configuration file by running the following command:
+2. Compile the source code.
 
-   ```
-   nano ~/.bashrc
-   ```
-
-3. Add the following line to the end of the file, replacing `/path/to/plantri` with the actual path to the Plantri executable:
-
-   ```
-   export PATH=$PATH:/path/to/plantri
+   ```bash
+   cd plantri53
+   make plantri
    ```
 
-4. Save and close the file.
+   This will compile the Plantri source code and create an executable called `plantri` in the same directory.
 
-5. Reload your shell configuration by running the following command:
 
-   ```
-   source ~/.bashrc
-   ```
-
-6. Verify that the Plantri command is now available by running the following command:
+3. Verify that the Plantri command is now available by running the following command:
 
    ```
    plantri -h
@@ -41,6 +34,12 @@ Here are the steps to add the Plantri directory to your `PATH`:
 
    This should display the Plantri help message.
 
-If you are using a different shell or operating system, the steps may be slightly different, but the general idea is the same: you need to add the directory containing the Plantri executable to your system's `PATH` environment variable so that the shell can find it.
 
 ## Usage
+
+Usage instructions for this project are documented in interaction Python notebooks (Jupyer Notebooks) within the /examples folder.
+
+## API Reference
+
+The API reference for this project is documented in the /docs folder.
+

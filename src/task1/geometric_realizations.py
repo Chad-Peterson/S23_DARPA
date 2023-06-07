@@ -7,6 +7,10 @@ import networkx as nx
 
 import numpy as np
 from numpy import cos, sin
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+
+from yamada import SpatialGraph
 
 
 def rotate_points(positions: np.ndarray,
@@ -94,16 +98,11 @@ def isomorphism(g, pos, n=3, rotate=False):
     for edge in list(g.edges()):
         g, pos = subdivide_edge(g, edge, pos, n=n)
 
-
-
     if rotate:
         pos = rotate_points(np.array(list(pos.values())))
         pos = {k: v for k, v in zip(list(g.nodes), pos)}
 
-    # k = 1000 * 1/len(g.nodes)
-    # nx.set_edge_attributes(g, 5, "weight")
 
-    # TODO Make weights of components larger than weights of edges
     # Set random weights for each edge
     nx.set_edge_attributes(g, {e: np.random.rand() for e in g.edges()}, "weight")
 
@@ -112,3 +111,73 @@ def isomorphism(g, pos, n=3, rotate=False):
     return g, pos
 
 
+def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizations=5, plot=False):
+
+    # Extract relevant information from the spatial graph
+    nodes = spatial_graph.nodes
+    node_positions = spatial_graph.node_positions
+
+    # Create a node positions dictionary to see the isomorphism
+    pos = {node: np.array(position) for node, position in zip(nodes, node_positions)}
+
+    # Create a networkx graph
+    g = nx.Graph()
+    g.add_nodes_from(spatial_graph.nodes)
+    g.add_edges_from(spatial_graph.edges)
+
+    # node_xyz = np.array([pos[v] for v in sorted(g)])
+    # edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
+
+    spatial_graphs = []
+    graphs = []
+    positions = []
+    for i in range(num_realizations):
+
+        g_iso, pos_iso = isomorphism(g, pos, n=7, rotate=True)
+        graphs.append(g_iso)
+        positions.append(pos_iso)
+
+        node_xyz = np.array([pos_iso[v] for v in sorted(g_iso)])
+        edge_xyz = np.array([(pos_iso[u], pos_iso[v]) for u, v in g_iso.edges()])
+
+        # sg_iso = SpatialGraph(nodes=sorted(list(g_iso.nodes)), edges=list(g_iso.edges), node_positions=node_xyz)
+        # spatial_graphs.append(sg_iso)
+
+
+    if plot:
+
+        for g_iso, pos_iso in zip(graphs, positions):
+
+            nodes = g_iso.nodes
+            pos = pos_iso
+            edges = g_iso.edges
+
+
+
+            node_xyz = np.array([pos[v] for v in nodes])
+            edge_xyz = np.array([(pos[u], pos[v]) for u, v in edges])
+
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection="3d")
+
+            ax.scatter(*node_xyz.T, s=100, ec="w")
+
+
+            # Rename graph nodes from ints to strings
+            comp_nodes = [node for node in nodes if 'V' in node]
+            comp_xyz = np.array([pos[v] for v in comp_nodes])
+
+            # Plot the component nodes
+            ax.scatter(*comp_xyz.T, s=500, ec="w", c="tab:blue")
+
+            for vizedge in edge_xyz:
+                ax.plot(*vizedge.T, color="tab:gray")
+
+            plt.show()
+
+
+
+    # return graphs, positions
+    return 1,2
+
+# def generate_geom
