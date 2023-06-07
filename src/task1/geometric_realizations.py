@@ -125,9 +125,6 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizat
     g.add_nodes_from(spatial_graph.nodes)
     g.add_edges_from(spatial_graph.edges)
 
-    # node_xyz = np.array([pos[v] for v in sorted(g)])
-    # edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
-
     spatial_graphs = []
     graphs = []
     positions = []
@@ -136,12 +133,6 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizat
         g_iso, pos_iso = isomorphism(g, pos, n=7, rotate=True)
         graphs.append(g_iso)
         positions.append(pos_iso)
-
-        node_xyz = np.array([pos_iso[v] for v in sorted(g_iso)])
-        edge_xyz = np.array([(pos_iso[u], pos_iso[v]) for u, v in g_iso.edges()])
-
-        # sg_iso = SpatialGraph(nodes=sorted(list(g_iso.nodes)), edges=list(g_iso.edges), node_positions=node_xyz)
-        # spatial_graphs.append(sg_iso)
 
 
     if plot:
@@ -152,8 +143,6 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizat
             pos = pos_iso
             edges = g_iso.edges
 
-
-
             node_xyz = np.array([pos[v] for v in nodes])
             edge_xyz = np.array([(pos[u], pos[v]) for u, v in edges])
 
@@ -161,7 +150,6 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizat
             ax = fig.add_subplot(111, projection="3d")
 
             ax.scatter(*node_xyz.T, s=100, ec="w")
-
 
             # Rename graph nodes from ints to strings
             comp_nodes = [node for node in nodes if 'V' in node]
@@ -175,9 +163,7 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizat
 
             plt.show()
 
+    return graphs, positions
 
-
-    # return graphs, positions
-    return 1,2
 
 # def generate_geom

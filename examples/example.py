@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 
 # from mpl_toolkits.mplot3d import Axes3D
 
-from task1 import isomorphism, enumerate_yamada_classes, k_nearest_neighbors, generate_geometric_realizations_for_one_topology
+from task1 import isomorphism, enumerate_yamada_classes, filter_by_internal_factors, \
+    generate_geometric_realizations_for_one_topology, filter_by_environmental_factors
 
 from yamada import SpatialGraph, extract_graph_from_json_file
 from yamada.visualization import position_spatial_graphs_in_3D
@@ -55,87 +56,26 @@ for sg_input in sg_inputs:
     spatial_graphs.append(sg)
     sg.plot()
 
+# Gener
 graphs, positions = generate_geometric_realizations_for_one_topology(spatial_graphs[0], num_realizations=5, plot=True)
 
 
-# # Generate isomorphisms for the first UST
-# sg_0 = spatial_graphs[0]
-# nodes_0 = sg_0.nodes
-# node_positions_0 = sg_0.node_positions
-#
-# # Create a node positions dictionary
-# pos = {node: np.array(position) for node, position in zip(nodes_0, node_positions_0)}
-#
-# gg = nx.Graph()
-# gg.add_nodes_from(sg_0.nodes)
-# gg.add_edges_from(sg_0.edges)
-
-# node_xyz = np.array([pos[v] for v in sorted(gg)])
-# edge_xyz = np.array([(pos[u], pos[v]) for u, v in gg.edges()])
-
-# graphs = []
-# positions = []
-# for i in range(10):
-#     g, pos = isomorphism(gg, pos, n=7, rotate=True)
-#     graphs.append(g)
-#     positions.append(pos)
+# TODO Add a function
+# Define environmental physics sources
+hot_pipe_1    = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
+hot_pipe_2    = [((-1, -1, z), "r") for z in np.linspace(-1, 1, 20)]
+medium_pipe_1 = [((1, 1, z), "y") for z in np.linspace(-1, 0, 10)]
+cold_pipe_1   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
+environmental_sources = hot_pipe_1 + hot_pipe_2 + medium_pipe_1 + cold_pipe_1
 
 
-# g2, pos = isomorphism(gg, pos, n=20, rotate=True)
-#
-# node_xyz = np.array([pos[v] for v in sorted(g2)])
-# edge_xyz = np.array([(pos[u], pos[v]) for u, v in g2.edges()])
+# TODO Loop thru all graphs
+# TODO return list, plot optional
+filter_by_environmental_factors(comp_xyz, node_xyz, environmental_sources)
 
-# node_xyz = np.array([pos[v] for v in sorted(g)])
-# edge_xyz = np.array([(pos[u], pos[v]) for u, v in g.edges()])
-# sg2_iso = SpatialGraph(nodes=sorted(list(g2.nodes)), edges=list(g2.edges), node_positions=node_xyz)
-# sg2_iso.plot()
+# TODO Loop thru all graphs
+# TODO return list, plot optional
+important_components = ['V1','V4','V7']
+my_neighbors = filter_by_internal_factors(g, pos, important_components, k=3)
 
-
-
-
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection="3d")
-#
-# ax.scatter(*node_xyz.T, s=100, ec="w")
-#
-# # Rename graph nodes from ints to strings
-# comp_nodes = [node for node in nodes_0 if 'V' in node]
-# comp_xyz = np.array([pos[v] for v in comp_nodes])
-#
-# # Plot the component nodes
-# ax.scatter(*comp_xyz.T, s=500, ec="w", c="tab:blue")
-#
-# for vizedge in edge_xyz:
-#     ax.plot(*vizedge.T, color="tab:gray")
-#
-# plt.show()
-
-
-
-
-
-
-
-
-
-
-#
-#
-# # Define external physics sources
-# hot_source_1  = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
-# hot_source_2  = [((-1, -1, z), "r") for z in np.linspace(-1, 1, 20)]
-# medium_source = [((1, 1, z), "y") for z in np.linspace(-1, 0, 10)]
-# cold_source   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
-#
-# ref_points_with_colors = hot_source_1 + hot_source_2 + medium_source + cold_source
-#
-#
-#
-#
-# plot_nodes_with_colors(comp_xyz, node_xyz, ref_points_with_colors)
-#
-# important_components = ['V1','V4','V7']
-# my_neighbors = k_nearest_neighbors(g, pos, important_components, k=3)
-#
-# print(my_neighbors)
+print(my_neighbors)

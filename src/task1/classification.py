@@ -8,19 +8,19 @@ from matplotlib import pyplot as plt
 from scipy.spatial.distance import cdist
 
 
-def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_colors):
+def filter_by_environmental_factors(component_positions, node_positions, environmental_factors, plot=False):
     """
     Plot nodes with colors based on their nearest reference point.
 
-    :param comp_positions: The positions of the comparison nodes as a 2D array of shape (N, 3).
-    :type comp_positions: array_like
+    :param component_positions: The positions of the comparison nodes as a 2D array of shape (N, 3).
+    :type component_positions: array_like
 
     :param node_positions: The positions of the nodes as a 2D array of shape (M, 3).
     :type node_positions: array_like
 
-    :param ref_points_with_colors: A list of tuples, where each tuple contains a reference point as a 1D array of shape (3,)
+    :param environmental_factors: A list of tuples, where each tuple contains a reference point as a 1D array of shape (3,)
         and a color as a string. The reference points are used to classify the nodes.
-    :type ref_points_with_colors: list of tuple
+    :type environmental_factors: list of tuple
 
     :return: None
     :rtype: NoneType
@@ -28,8 +28,8 @@ def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_color
 
     # Convert node positions and reference points to numpy arrays
     node_xyz = np.array(node_positions)
-    ref_xyz = np.array([p[0] for p in ref_points_with_colors])
-    ref_colors = [p[1] for p in ref_points_with_colors]
+    ref_xyz = np.array([p[0] for p in environmental_factors])
+    ref_colors = [p[1] for p in environmental_factors]
 
     # Compute the distances between each node and each reference point
     distances = np.sqrt(((node_xyz[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
@@ -45,14 +45,14 @@ def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_color
         ax.scatter(*node_xyz[mask].T, s=100, ec="w", c=ref_color)
 
     # Compute the distances between each node and each reference point
-    distances2 = np.sqrt(((comp_positions[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
+    distances2 = np.sqrt(((component_positions[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
 
     # Find the index of the nearest reference point for each node
     nearest_ref_indices2 = np.argmin(distances2, axis=1)
 
     for i, ref_color in enumerate(ref_colors):
         mask2 = nearest_ref_indices2 == i
-        ax.scatter(*comp_positions[mask2].T, s=750, ec="w", c=ref_color)
+        ax.scatter(*component_positions[mask2].T, s=750, ec="w", c=ref_color)
 
 
     for ref_point, ref_color in zip(ref_xyz, ref_colors):
@@ -62,7 +62,7 @@ def plot_nodes_with_colors(comp_positions, node_positions, ref_points_with_color
 
 
 
-def k_nearest_neighbors(graph, positions, important_nodes, k=3):
+def filter_by_internal_factors(graph, positions, important_nodes, k=3):
     """
     Finds the k nearest neighbors for each important node in the graph.
 

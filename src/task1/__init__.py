@@ -1,3 +1,3 @@
 from .enumeration import enumerate_yamada_classes
-from .classification import plot_nodes_with_colors, k_nearest_neighbors
+from .classification import filter_by_environmental_factors, filter_by_internal_factors
 from .geometric_realizations import isomorphism, generate_geometric_realizations_for_one_topology
