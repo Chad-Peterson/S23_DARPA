@@ -166,4 +166,14 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizat
     return graphs, positions
 
 
-# def generate_geom
+def generate_geometric_realizations_for_all_topologies(spatial_graphs, num_realizations=5, plot=False):
+
+    graphs = []
+    positions = []
+
+    for spatial_graph in spatial_graphs:
+
+        g, pos = generate_geometric_realizations_for_one_topology(spatial_graph, num_realizations=num_realizations, plot=plot)
+
+        graphs.append(g)
+        positions.append(pos)
