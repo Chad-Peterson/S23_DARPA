@@ -106,25 +106,25 @@ geometric_realizations = generate_geometric_realizations_for_all_topologies(spat
 # Define environmental factors (e.g., a hot pipe from another system)
 # Valid environmental factors are defined as a list of tuples, where each tuple is a 3D coordinate and a color
 # Each color represents a unique environmental factor (e.g., the 40 points of hot_pipe are grouped as one factor)
-# hot_pipe    = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
-# hot_pipe    += [((-1, -1, z), "r") for z in np.linspace(-1, 1, 20)]
-# medium_pipe = [((1, 1, z), "y") for z in np.linspace(-1, 0, 10)]
-# cold_pipe   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
-# environmental_sources = hot_pipe + medium_pipe + cold_pipe
+hot_pipe    = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
+hot_pipe    += [((-1, -1, z), "r") for z in np.linspace(-1, 1, 20)]
+medium_pipe = [((1, 1, z), "y") for z in np.linspace(-1, 0, 10)]
+cold_pipe   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
+environmental_sources = hot_pipe + medium_pipe + cold_pipe
 
-# spatial_graph = list(geometric_realizations.keys())[0]
-# nodes = spatial_graph.nodes
-# pos = list(geometric_realizations.values())[0]
-# node_xyz = np.array([pos[v] for v in nodes])
+spatial_graph = list(geometric_realizations.keys())[0]
+nodes = spatial_graph.nodes
+pos = list(geometric_realizations.values())[0]
+node_xyz = np.array([pos[v] for v in nodes])
 
 # Rename graph nodes from ints to strings
-# comp_nodes = [node for node in nodes if 'V' in node]
-# comp_xyz = np.array([pos[v] for v in comp_nodes])
+comp_nodes = [node for node in nodes if 'V' in node]
+comp_xyz = np.array([pos[v] for v in comp_nodes])
 
 
 # TODO Loop thru all graphs
 # TODO return list, plot optional
-# filter_by_environmental_factors(comp_xyz, node_xyz, environmental_sources)
+filter_by_environmental_factors(comp_xyz, node_xyz, environmental_sources)
 
 
 # %% Filter geometric realizations by unique combinations of internal factors
