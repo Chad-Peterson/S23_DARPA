@@ -95,7 +95,7 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
 
 
 
-def filter_by_internal_factors(all_geometric_realizations, internal_factors, k=3):
+def filter_by_internal_factors(all_geometric_realizations, component_radii, internal_factors, k=3):
     """
     Finds the k nearest neighbors for each important node in the graph.
 
@@ -125,8 +125,13 @@ def filter_by_internal_factors(all_geometric_realizations, internal_factors, k=3
 
             node_positions, edges = geometric_realization
 
-            nodes = list(node_positions.keys())
-            node_xyz = np.array([positions[v] for v in nodes])
+            component_nodes = list(component_radii.keys())
+            component_positions = np.array([node_positions[node] for node in component_nodes])
+            nodes = component_nodes
+            node_xyz = component_positions
+
+            # nodes = list(node_positions.keys())
+            # node_xyz = np.array([node_positions[v] for v in nodes])
             dist_matrix = cdist(node_xyz, node_xyz)
             nearest_neighbors = {}
             for i, node in enumerate(nodes):
@@ -139,4 +144,14 @@ def filter_by_internal_factors(all_geometric_realizations, internal_factors, k=3
                 if node not in internal_factors:
                     del nearest_neighbors[node]
 
-            return nearest_neighbors
+            internal_code = tuple([tuple(nearest_neighbors[node]) for node in nearest_neighbors.keys()])
+
+            unique_code = tuple([internal_code, environmental_code])
+
+            if unique_code not in unqiue_codes:
+                unqiue_codes.append(unique_code)
+                filtered_geometric_realizations[unique_code] = geometric_realization
+
+        all_filtered_geometric_realizations[spatial_graph] = filtered_geometric_realizations
+
+    return all_filtered_geometric_realizations

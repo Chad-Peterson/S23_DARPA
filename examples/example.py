@@ -136,6 +136,8 @@ geometric_realizations = filter_by_environmental_factors(geometric_realizations,
 
 
 # User Input
+# Internal factors are defined as nodes within the system architecture that are physically significant
+# (e.g., a component that generates heat or is sensitive to heat).
 internal_factors = ['V1', 'V4', 'V7']
 
 geometric_realizations =  filter_by_internal_factors(geometric_realizations,
