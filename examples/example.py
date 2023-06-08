@@ -48,7 +48,7 @@ from yamada.visualization import position_spatial_graphs_in_3D
 # spatial_graphs = [sg_0]
 
 
-# %% Define the System Architecture
+# %% Define the System Architecture and Component Geometries
 
 # The system architecture is a NetworkX graph where the nodes represent components and the edges
 # represent connections between components. The nodes are labeled with integers starting from 0.
@@ -56,12 +56,20 @@ from yamada.visualization import position_spatial_graphs_in_3D
 # Currently, components must be either 2- or 3-valent. Please refer to the documentation for
 # more information.
 
-# User Input: Simple system architecture
+# User Input: System architecture
+# Simple example
 sa = [(0, 3), (0, 4), (1, 2), (1, 3), (1, 4), (2, 0), (2, 5), (3, 5), (4, 5)]
-
-# User Input: Complex system architecture
+# Complex example
 # sa = [(0, 1), (0, 3), (0, 8), (1, 8), (1, 9), (2, 6), (2, 9), (3, 2),
 #       (3, 4), (4, 5), (4, 7), (5, 6), (5, 9), (7, 6), (8, 7)]
+
+# User Input: Define the bounding sphere radii for each component
+# The layout generation process uses bounding spheres to ensure feasible layouts
+# Simple example
+component_radii = {'V0':0.76566057, 'V1':0.53418585, 'V2':1.18794388, 'V3':0.5923728, 'V4':0.53650239, 'V5':0.56783063}
+# Complex example
+# component_radii = {'V0':0.76566057, 'V1':0.53418585, 'V2':1.18794388, 'V3':0.5923728, 'V4':0.53650239, 'V5':0.56783063,
+#                    'V6':0.55673628, 'V7':0.77791954, 'V8':0.50689909, 'V9':0.76539609}
 
 # Create a networkx graph from the system architecture
 sa_graph = nx.MultiGraph()
@@ -100,6 +108,7 @@ for sg_input in sg_inputs:
 num_geometric_realizations_per_topology = 5
 
 geometric_realizations = generate_geometric_realizations_for_all_topologies(spatial_graphs,
+                                                                            component_radii,
                                                                             num_realizations=num_geometric_realizations_per_topology,
                                                                             plot=True)
 

@@ -85,12 +85,16 @@ def isomorphism(g, pos, n=3, rotate=True):
 
     :param g: The graph to generate a new realization for.
     :type g: networkx.Graph
+
     :param pos: A dictionary mapping node IDs to (x, y, z) tuples representing their positions.
     :type pos: dict
+
     :param n: The number of subdivisions to make for each edge. Default is 3.
     :type n: int, optional
+
     :param rotate: Whether to randomly rotate the positions of the nodes. Default is False.
     :type rotate: bool, optional
+
     :return: A tuple containing the new graph and a dictionary mapping node IDs to their new positions.
     :rtype: tuple
     """
@@ -113,7 +117,7 @@ def isomorphism(g, pos, n=3, rotate=True):
     return g, pos
 
 
-def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizations=5, plot=False):
+def generate_geometric_realizations_for_one_topology(spatial_graph, component_radii, num_realizations=5, plot=False):
 
     # Extract relevant information from the spatial graph
     nodes = spatial_graph.nodes
@@ -153,11 +157,13 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizat
             ax.scatter(*node_xyz.T, s=100, ec="w")
 
             # Rename graph nodes from ints to strings
-            comp_nodes = [node for node in nodes if 'V' in node]
+            comp_nodes = list(component_radii.keys())
             comp_xyz = np.array([pos[v] for v in comp_nodes])
 
+            s = [component_radii[v] * 700 for v in comp_nodes]
+
             # Plot the component nodes
-            ax.scatter(*comp_xyz.T, s=500, ec="w", c="tab:blue")
+            ax.scatter(*comp_xyz.T, s=s, ec="w", c="tab:blue")
 
             for vizedge in edge_xyz:
                 ax.plot(*vizedge.T, color="tab:gray")
@@ -167,13 +173,16 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizat
     return all_node_positions, all_edges
 
 
-def generate_geometric_realizations_for_all_topologies(spatial_graphs, num_realizations=5, plot=False):
+def generate_geometric_realizations_for_all_topologies(spatial_graphs, component_radii, num_realizations=5, plot=False):
 
     geometric_realizations= {}
 
     for spatial_graph in spatial_graphs:
 
-        node_positions, edges = generate_geometric_realizations_for_one_topology(spatial_graph, num_realizations=num_realizations, plot=plot)
+        node_positions, edges = generate_geometric_realizations_for_one_topology(spatial_graph,
+                                                                                 component_radii,
+                                                                                 num_realizations=num_realizations,
+                                                                                 plot=plot)
 
         geometric_realizations[spatial_graph] = (node_positions, edges)
 
