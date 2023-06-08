@@ -55,7 +55,7 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
             ax = fig.add_subplot(111, projection="3d")
             for i, ref_color in enumerate(ref_colors):
                 mask = nearest_ref_indices == i
-                ax.scatter(*node_xyz[mask].T, s=100, ec="w", c=ref_color)
+                ax.scatter(*node_xyz[mask].T, s=50, ec="w", c=ref_color)
 
             # Compute the distances between each node and each reference point
             distances2 = np.sqrt(((component_positions[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
@@ -65,7 +65,13 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
 
             for i, ref_color in enumerate(ref_colors):
                 mask2 = nearest_ref_indices2 == i
-                ax.scatter(*component_positions[mask2].T, s=750, ec="w", c=ref_color)
+
+                s = [np.pi * (component_radii[v]) ** 2 * 1000 for v in component_nodes]
+                s_arr = np.array(s)
+                s_arr = s_arr[mask2]
+                s = list(s_arr)
+
+                ax.scatter(*component_positions[mask2].T, s=s, ec="w", c=ref_color)
 
 
             for ref_point, ref_color in zip(ref_xyz, ref_colors):
