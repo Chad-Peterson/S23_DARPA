@@ -137,10 +137,9 @@ environmental_sources = hot_pipe + medium_pipe + cold_pipe
 # comp_nodes = [node for node in nodes if 'V' in node]
 # comp_xyz = np.array([pos[v] for v in comp_nodes])
 
-
-# TODO Loop thru all graphs
-# TODO return list, plot optional
-# filter_by_environmental_factors(comp_xyz, node_xyz, environmental_sources)
+geometric_realizations = filter_by_environmental_factors(geometric_realizations,
+                                                         component_radii,
+                                                         environmental_sources)
 
 
 # %% Filter geometric realizations by unique combinations of internal factors
@@ -152,9 +151,8 @@ internal_factors = ['V1', 'V4', 'V7']
 # TODO Loop thru all graphs
 # TODO return list, plot optional
 
-# my_neighbors = filter_by_internal_factors(g, pos, internal_factors, k=3)
-#
-# print(my_neighbors)
+# geometric_realizations =  = filter_by_internal_factors(g, pos, internal_factors, k=3)
+
 
 
 # %% Write output

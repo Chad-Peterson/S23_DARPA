@@ -131,12 +131,16 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, component_ra
     g.add_nodes_from(spatial_graph.nodes)
     g.add_edges_from(spatial_graph.edges)
 
+    geometric_realizations_dict = {}
 
     all_node_positions = []
     all_edges = []
     for i in range(num_realizations):
 
         g_iso, pos_iso = isomorphism(g, pos, n=7, rotate=True)
+
+        geometric_realizations_dict[i] = [pos_iso, list(g_iso.edges)]
+
         all_node_positions.append(pos_iso)
         all_edges.append(list(g_iso.edges))
 
@@ -154,13 +158,13 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, component_ra
             fig = plt.figure()
             ax = fig.add_subplot(111, projection="3d")
 
-            ax.scatter(*node_xyz.T, s=100, ec="w")
+            ax.scatter(*node_xyz.T, s=50, ec="w")
 
             # Rename graph nodes from ints to strings
             comp_nodes = list(component_radii.keys())
             comp_xyz = np.array([pos[v] for v in comp_nodes])
 
-            s = [component_radii[v] * 700 for v in comp_nodes]
+            s = [np.pi*(component_radii[v])**2 * 1000 for v in comp_nodes]
 
             # Plot the component nodes
             ax.scatter(*comp_xyz.T, s=s, ec="w", c="tab:blue")
@@ -170,7 +174,7 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, component_ra
 
             plt.show()
 
-    return all_node_positions, all_edges
+    return geometric_realizations_dict
 
 
 def generate_geometric_realizations_for_all_topologies(spatial_graphs, component_radii, num_realizations=5, plot=False):
@@ -179,12 +183,12 @@ def generate_geometric_realizations_for_all_topologies(spatial_graphs, component
 
     for spatial_graph in spatial_graphs:
 
-        node_positions, edges = generate_geometric_realizations_for_one_topology(spatial_graph,
-                                                                                 component_radii,
-                                                                                 num_realizations=num_realizations,
-                                                                                 plot=plot)
+        geometric_realizations_dict = generate_geometric_realizations_for_one_topology(spatial_graph,
+                                                                                       component_radii,
+                                                                                       num_realizations=num_realizations,
+                                                                                       plot=plot)
 
-        geometric_realizations[spatial_graph] = (node_positions, edges)
+        geometric_realizations[spatial_graph] = geometric_realizations_dict
 
 
     return geometric_realizations

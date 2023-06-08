@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from scipy.spatial.distance import cdist
 
 
-def filter_by_environmental_factors(component_positions, node_positions, environmental_factors, plot=False):
+def filter_by_environmental_factors(all_geometric_realizations, component_radii, environmental_factors, plot=True):
     """
     Plot nodes with colors based on their nearest reference point.
 
@@ -26,39 +26,52 @@ def filter_by_environmental_factors(component_positions, node_positions, environ
     :rtype: NoneType
     """
 
-    # Convert node positions and reference points to numpy arrays
-    node_xyz = np.array(node_positions)
-    ref_xyz = np.array([p[0] for p in environmental_factors])
-    ref_colors = [p[1] for p in environmental_factors]
+    all_filtered_geometric_realizations = {}
 
-    # Compute the distances between each node and each reference point
-    distances = np.sqrt(((node_xyz[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
+    for geometric_realizations in all_geometric_realizations.values():
 
-    # Find the index of the nearest reference point for each node
-    nearest_ref_indices = np.argmin(distances, axis=1)
+        filtered_geometric_realizations = {}
 
-    # Plot the nodes with colors based on their nearest reference point
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection="3d")
-    for i, ref_color in enumerate(ref_colors):
-        mask = nearest_ref_indices == i
-        ax.scatter(*node_xyz[mask].T, s=100, ec="w", c=ref_color)
+        for geometric_realization in geometric_realizations.values():
 
-    # Compute the distances between each node and each reference point
-    distances2 = np.sqrt(((component_positions[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
+            node_positions, edges = geometric_realization
+            component_nodes = list(component_radii.keys())
+            component_positions = np.array([node_positions[node] for node in component_nodes])
 
-    # Find the index of the nearest reference point for each node
-    nearest_ref_indices2 = np.argmin(distances2, axis=1)
+            # Convert node positions and reference points to numpy arrays
+            # node_xyz = np.array(node_positions)
+            node_xyz = np.array(list(node_positions.values()))
+            ref_xyz = np.array([p[0] for p in environmental_factors])
+            ref_colors = [p[1] for p in environmental_factors]
 
-    for i, ref_color in enumerate(ref_colors):
-        mask2 = nearest_ref_indices2 == i
-        ax.scatter(*component_positions[mask2].T, s=750, ec="w", c=ref_color)
+            # Compute the distances between each node and each reference point
+            distances = np.sqrt(((node_xyz[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
+
+            # Find the index of the nearest reference point for each node
+            nearest_ref_indices = np.argmin(distances, axis=1)
+
+            # Plot the nodes with colors based on their nearest reference point
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection="3d")
+            for i, ref_color in enumerate(ref_colors):
+                mask = nearest_ref_indices == i
+                ax.scatter(*node_xyz[mask].T, s=100, ec="w", c=ref_color)
+
+            # Compute the distances between each node and each reference point
+            distances2 = np.sqrt(((component_positions[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
+
+            # Find the index of the nearest reference point for each node
+            nearest_ref_indices2 = np.argmin(distances2, axis=1)
+
+            for i, ref_color in enumerate(ref_colors):
+                mask2 = nearest_ref_indices2 == i
+                ax.scatter(*component_positions[mask2].T, s=750, ec="w", c=ref_color)
 
 
-    for ref_point, ref_color in zip(ref_xyz, ref_colors):
-        ax.scatter(*ref_point.T, s=100, ec="w", c=ref_color)
+            for ref_point, ref_color in zip(ref_xyz, ref_colors):
+                ax.scatter(*ref_point.T, s=100, ec="w", c=ref_color)
 
-    plt.show()
+            plt.show()
 
 
 
