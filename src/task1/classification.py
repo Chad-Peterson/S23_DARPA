@@ -28,10 +28,10 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
 
     all_filtered_geometric_realizations = {}
 
-    for geometric_realizations in all_geometric_realizations.values():
+    for spatial_graph, geometric_realizations in all_geometric_realizations.items():
 
         filtered_geometric_realizations = {}
-
+        unqiue_codes = []
         for geometric_realization in geometric_realizations.values():
 
             node_positions, edges = geometric_realization
@@ -48,13 +48,19 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
             distances = np.sqrt(((node_xyz[:, np.newaxis, :] - ref_xyz) ** 2).sum(axis=2))
 
             # Find the index of the nearest reference point for each node
-            nearest_ref_indices = np.argmin(distances, axis=1)
+            closest_env_indices = np.argmin(distances, axis=1)
+            closest_env_colors = [ref_colors[i] for i in closest_env_indices]
+
+            component_indices = [list(node_positions.keys()).index(node) for node in component_nodes]
+
+            # Create a list that identifies which environmental factor is closest to each component node
+            closest_factors = tuple(closest_env_colors[i] for i in component_indices)
 
             # Plot the nodes with colors based on their nearest reference point
             fig = plt.figure()
             ax = fig.add_subplot(111, projection="3d")
             for i, ref_color in enumerate(ref_colors):
-                mask = nearest_ref_indices == i
+                mask = closest_env_indices == i
                 ax.scatter(*node_xyz[mask].T, s=50, ec="w", c=ref_color)
 
             # Compute the distances between each node and each reference point
@@ -78,6 +84,14 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
                 ax.scatter(*ref_point.T, s=100, ec="w", c=ref_color)
 
             plt.show()
+
+            if closest_factors not in unqiue_codes:
+                unqiue_codes.append(closest_factors)
+                filtered_geometric_realizations[closest_factors] = geometric_realization
+
+        all_filtered_geometric_realizations[spatial_graph] = filtered_geometric_realizations
+
+    return all_filtered_geometric_realizations
 
 
 
