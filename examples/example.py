@@ -56,10 +56,10 @@ from yamada.visualization import position_spatial_graphs_in_3D
 # Currently, components must be either 2- or 3-valent. Please refer to the documentation for
 # more information.
 
-# Simple system architecture
+# User Input: Simple system architecture
 sa = [(0, 3), (0, 4), (1, 2), (1, 3), (1, 4), (2, 0), (2, 5), (3, 5), (4, 5)]
 
-# Complex system architecture
+# User Input: Complex system architecture
 # sa = [(0, 1), (0, 3), (0, 8), (1, 8), (1, 9), (2, 6), (2, 9), (3, 2),
 #       (3, 4), (4, 5), (4, 7), (5, 6), (5, 9), (7, 6), (8, 7)]
 
@@ -74,8 +74,9 @@ plt.show()
 
 # %% Enumerate all Unique Spatial Topologies
 
-
+# User Input
 number_of_crossings = 1
+
 unique_spatial_topologies, number_topologies = enumerate_yamada_classes(sa_graph, number_of_crossings)
 
 
@@ -95,43 +96,53 @@ for sg_input in sg_inputs:
 # %% Generate a Spatially Diverse Set of Geometric Realizations for Each Unique Spatial Topology
 
 
+# User Input
+num_geometric_realizations_per_topology = 5
+
 geometric_realizations = generate_geometric_realizations_for_all_topologies(spatial_graphs,
-                                                                            num_realizations=5,
+                                                                            num_realizations=num_geometric_realizations_per_topology,
                                                                             plot=True)
 
 
 # %% Filter geometric realizations by unique combinations of environmental factors
 
 
+# User Input
 # Define environmental factors (e.g., a hot pipe from another system)
-# Valid environmental factors are defined as a list of tuples, where each tuple is a 3D coordinate and a color
-# Each color represents a unique environmental factor (e.g., the 40 points of hot_pipe are grouped as one factor)
+# Valid environmental factors are defined as a list of tuples, where each tuple is pair of 3D coordinates and a color
+# Each color represents a unique environmental factor (e.g., the 40 red points of hot_pipe are grouped as one factor)
 hot_pipe    = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
 hot_pipe    += [((-1, -1, z), "r") for z in np.linspace(-1, 1, 20)]
 medium_pipe = [((1, 1, z), "y") for z in np.linspace(-1, 0, 10)]
 cold_pipe   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
 environmental_sources = hot_pipe + medium_pipe + cold_pipe
 
-spatial_graph = list(geometric_realizations.keys())[0]
-nodes = spatial_graph.nodes
-pos = list(geometric_realizations.values())[0]
-node_xyz = np.array([pos[v] for v in nodes])
 
-# Rename graph nodes from ints to strings
-comp_nodes = [node for node in nodes if 'V' in node]
-comp_xyz = np.array([pos[v] for v in comp_nodes])
+
+# spatial_graph = list(geometric_realizations.keys())[0]
+# nodes = spatial_graph.nodes
+# pos = list(geometric_realizations.values())[0]
+# node_xyz = np.array([pos[v] for v in nodes])
+#
+# # Rename graph nodes from ints to strings
+# comp_nodes = [node for node in nodes if 'V' in node]
+# comp_xyz = np.array([pos[v] for v in comp_nodes])
 
 
 # TODO Loop thru all graphs
 # TODO return list, plot optional
-filter_by_environmental_factors(comp_xyz, node_xyz, environmental_sources)
+# filter_by_environmental_factors(comp_xyz, node_xyz, environmental_sources)
 
 
 # %% Filter geometric realizations by unique combinations of internal factors
 
+
+# User Input
+internal_factors = ['V1', 'V4', 'V7']
+
 # TODO Loop thru all graphs
 # TODO return list, plot optional
-# internal_factors = ['V1', 'V4', 'V7']
+
 # my_neighbors = filter_by_internal_factors(g, pos, internal_factors, k=3)
 #
 # print(my_neighbors)

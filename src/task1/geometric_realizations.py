@@ -14,7 +14,7 @@ from yamada import SpatialGraph
 
 
 def rotate_points(positions: np.ndarray,
-                  rotation: np.ndarray = 2 * np.random.rand(3)) -> np.ndarray:
+                  rotation: np.ndarray = None) -> np.ndarray:
     """
     Rotates a set of points about the first 3D point in the array.
 
@@ -23,6 +23,9 @@ def rotate_points(positions: np.ndarray,
 
     :return: new_positions:
     """
+
+    if rotation is None:
+        rotation = 2 * np.pi * np.random.rand(3)
 
     # Shift the object to origin
     reference_position = positions[0]
@@ -76,7 +79,7 @@ def subdivide_edge(g, edge, pos, n=3):
     return g, pos
 
 
-def isomorphism(g, pos, n=3, rotate=False):
+def isomorphism(g, pos, n=3, rotate=True):
     """
     Generates an isomorphism of a graph with subdivided edges.
 
@@ -91,7 +94,6 @@ def isomorphism(g, pos, n=3, rotate=False):
     :return: A tuple containing the new graph and a dictionary mapping node IDs to their new positions.
     :rtype: tuple
     """
-    # Implementation details...
 
     g = g.copy()
 
