@@ -112,10 +112,19 @@ medium_pipe = [((1, 1, z), "y") for z in np.linspace(-1, 0, 10)]
 cold_pipe   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
 environmental_sources = hot_pipe + medium_pipe + cold_pipe
 
+spatial_graph = list(geometric_realizations.keys())[0]
+nodes = spatial_graph.nodes
+pos = list(geometric_realizations.values())[0]
+node_xyz = np.array([pos[v] for v in nodes])
+
+# Rename graph nodes from ints to strings
+comp_nodes = [node for node in nodes if 'V' in node]
+comp_xyz = np.array([pos[v] for v in comp_nodes])
+
 
 # TODO Loop thru all graphs
 # TODO return list, plot optional
-# filter_by_environmental_factors(comp_xyz, node_xyz, environmental_sources)
+filter_by_environmental_factors(comp_xyz, node_xyz, environmental_sources)
 
 
 # %% Filter geometric realizations by unique combinations of internal factors
@@ -133,6 +142,6 @@ internal_factors = ['V1', 'V4', 'V7']
 # TODO Add write output function
 # Writes each geometric realization to an individual JSON file.
 
-output_directory = os.path.dirname(__file__) + '/output/'
-write_output(geometric_realizations, output_directory)
+# output_directory = os.path.dirname(__file__) + '/output/'
+# write_output(geometric_realizations, output_directory)
 

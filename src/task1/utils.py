@@ -5,14 +5,14 @@ This module contains utility functions for task1.
 
 import json
 
-def write_output(data, filename):
+def write_output(data, filepath):
     """
     Writes data to a file in the output directory.
 
     :param data: The data to write.
-    :param filename: The name of the file to write to.
+    :param filepath: The name of the file to write to.
     """
-    with open('output/' + filename, 'w') as f:
+    with open(filepath, 'w') as f:
         json.dump(data, f, indent=4)
 
 
