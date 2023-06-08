@@ -168,12 +168,13 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, num_realizat
 
 def generate_geometric_realizations_for_all_topologies(spatial_graphs, num_realizations=5, plot=False):
 
-    graphs = []
-    positions = []
+    geometric_realizations= {}
 
     for spatial_graph in spatial_graphs:
 
-        g, pos = generate_geometric_realizations_for_one_topology(spatial_graph, num_realizations=num_realizations, plot=plot)
+        graphs, positions = generate_geometric_realizations_for_one_topology(spatial_graph, num_realizations=num_realizations, plot=plot)
 
-        graphs.append(g)
-        positions.append(pos)
+        geometric_realizations[spatial_graph] = (graphs, positions)
+
+
+    return geometric_realizations

@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 from task1 import enumerate_yamada_classes, filter_by_internal_factors, \
     generate_geometric_realizations_for_one_topology, \
     generate_geometric_realizations_for_all_topologies,\
-    filter_by_environmental_factors
+    filter_by_environmental_factors, write_output
 
 from yamada import SpatialGraph, extract_graph_from_json_file
 from yamada.visualization import position_spatial_graphs_in_3D
@@ -82,7 +82,6 @@ unique_spatial_topologies, number_topologies = enumerate_yamada_classes(sa_graph
 # %% Generate A Near-Planar Geometric Realization of Each Unique Spatial Topology
 
 
-# Create near-planar geometric realizations of each UST
 sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
 
 # Convert each near-planar geometric realization into a SpatialGraph object
@@ -96,38 +95,44 @@ for sg_input in sg_inputs:
 # %% Generate a Spatially Diverse Set of Geometric Realizations for Each Unique Spatial Topology
 
 
-graphs, positions = generate_geometric_realizations_for_one_topology(spatial_graphs[0], num_realizations=5, plot=True)
+geometric_realizations = generate_geometric_realizations_for_all_topologies(spatial_graphs,
+                                                                            num_realizations=5,
+                                                                            plot=True)
 
 
 # %% Filter geometric realizations by unique combinations of environmental factors
 
 
-# TODO Add a function
 # Define environmental factors (e.g., a hot pipe from another system)
 # Valid environmental factors are defined as a list of tuples, where each tuple is a 3D coordinate and a color
-# Each color represents a unique environmental factor (e.g., the 40 points of hot_pipe_1 are grouped as one factor)
-hot_pipe_1    = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
-hot_pipe_1    += [((-1, -1, z), "r") for z in np.linspace(-1, 1, 20)]
-medium_pipe_1 = [((1, 1, z), "y") for z in np.linspace(-1, 0, 10)]
-cold_pipe_1   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
-environmental_sources = hot_pipe_1 + medium_pipe_1 + cold_pipe_1
+# Each color represents a unique environmental factor (e.g., the 40 points of hot_pipe are grouped as one factor)
+hot_pipe    = [((x, -1, -1), "r") for x in np.linspace(-1, 1, 20)]
+hot_pipe    += [((-1, -1, z), "r") for z in np.linspace(-1, 1, 20)]
+medium_pipe = [((1, 1, z), "y") for z in np.linspace(-1, 0, 10)]
+cold_pipe   = [((x, 1, 1), "b") for x in np.linspace(-1, 1, 20)]
+environmental_sources = hot_pipe + medium_pipe + cold_pipe
 
 
 # TODO Loop thru all graphs
 # TODO return list, plot optional
-filter_by_environmental_factors(comp_xyz, node_xyz, environmental_sources)
+# filter_by_environmental_factors(comp_xyz, node_xyz, environmental_sources)
 
 
 # %% Filter geometric realizations by unique combinations of internal factors
 
 # TODO Loop thru all graphs
 # TODO return list, plot optional
-important_components = ['V1','V4','V7']
-my_neighbors = filter_by_internal_factors(g, pos, important_components, k=3)
-
-print(my_neighbors)
+internal_factors = ['V1', 'V4', 'V7']
+# my_neighbors = filter_by_internal_factors(g, pos, internal_factors, k=3)
+#
+# print(my_neighbors)
 
 
 # %% Write output
 
 # TODO Add write output function
+# Writes each geometric realization to an individual JSON file.
+
+output_directory = os.path.dirname(__file__) + '/output/'
+write_output(geometric_realizations, output_directory)
+
