@@ -95,7 +95,7 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
 
 
 
-def filter_by_internal_factors(graph, positions, important_nodes, k=3):
+def filter_by_internal_factors(all_geometric_realizations, internal_factors, k=3):
     """
     Finds the k nearest neighbors for each important node in the graph.
 
@@ -115,18 +115,28 @@ def filter_by_internal_factors(graph, positions, important_nodes, k=3):
     :rtype: dict
     """
 
-    nodes = sorted(graph.nodes())
-    node_xyz = np.array([positions[v] for v in nodes])
-    dist_matrix = cdist(node_xyz, node_xyz)
-    nearest_neighbors = {}
-    for i, node in enumerate(nodes):
-        distances = dist_matrix[i]
-        neighbors = np.argsort(distances)[1:k+1]
-        nearest_neighbors[node] = [nodes[n] for n in neighbors]
+    all_filtered_geometric_realizations = {}
 
-    # Delete entries from dictionary that are not important nodes
-    for node in list(nearest_neighbors.keys()):
-        if node not in important_nodes:
-            del nearest_neighbors[node]
+    for spatial_graph, geometric_realizations in all_geometric_realizations.items():
 
-    return nearest_neighbors
+        filtered_geometric_realizations = {}
+        unqiue_codes = []
+        for environmental_code, geometric_realization in geometric_realizations.items():
+
+            node_positions, edges = geometric_realization
+
+            nodes = list(node_positions.keys())
+            node_xyz = np.array([positions[v] for v in nodes])
+            dist_matrix = cdist(node_xyz, node_xyz)
+            nearest_neighbors = {}
+            for i, node in enumerate(nodes):
+                distances = dist_matrix[i]
+                neighbors = np.argsort(distances)[1:k+1]
+                nearest_neighbors[node] = [nodes[n] for n in neighbors]
+
+            # Delete entries from dictionary that are not important nodes
+            for node in list(nearest_neighbors.keys()):
+                if node not in internal_factors:
+                    del nearest_neighbors[node]
+
+            return nearest_neighbors
