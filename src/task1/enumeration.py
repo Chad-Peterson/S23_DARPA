@@ -36,9 +36,9 @@ def shadows_via_plantri_by_edge_codes(num_trivalent_vertices, num_crossings):
     Note: This is a wrapper around plantri, which must be installed separately. The plantri executable must be in the
     current working directory.
 
-    :param num_trivalent_vertices:
-    :param num_crossings:
-    :return:
+    :param num_trivalent_vertices: The number of trivalent vertices in the abstract graph.
+    :param num_crossings: The number of crossings in the abstract graph.
+    :return: A list of shadows, where each shadow is a list of edge codes.
     """
 
     assert num_trivalent_vertices % 2 == 0
@@ -145,9 +145,9 @@ def spatial_graph_diagrams_fixed_crossings(G, crossings):
 def enumerate_yamada_classes(G, max_crossings):
     """
     A function that enumerates the Yamada classes of a given underlying graph with a given maximum number of crossings.
-    :param G:
-    :param max_crossings:
-    :return:
+    :param G: The underlying graph.
+    :param max_crossings: The maximum number of crossings.
+    :return: A dictionary mapping Yamada polynomials to spatial graph diagrams and the number of examined shadows.
     """
 
     examined = 0

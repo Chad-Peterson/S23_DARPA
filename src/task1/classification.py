@@ -12,18 +12,21 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
     """
     Plot nodes with colors based on their nearest reference point.
 
-    :param component_positions: The positions of the comparison nodes as a 2D array of shape (N, 3).
-    :type component_positions: array_like
+    :param all_geometric_realizations: A dictionary containing the geometric realizations for each unique spatial topology.
+    :type all_geometric_realizations: dict
 
-    :param node_positions: The positions of the nodes as a 2D array of shape (M, 3).
-    :type node_positions: array_like
+    :param component_radii: A dictionary containing the radii of each component node.
+    :type component_radii: dict
 
     :param environmental_factors: A list of tuples, where each tuple contains a reference point as a 1D array of shape (3,)
         and a color as a string. The reference points are used to classify the nodes.
     :type environmental_factors: list of tuple
 
-    :return: None
-    :rtype: NoneType
+    :param plot: A boolean indicating whether to plot the results.
+    :type plot: bool
+
+    :return: A dictionary containing the filtered geometric realizations for each unique spatial topology.
+    :rtype: dict
     """
 
     all_filtered_geometric_realizations = {}
@@ -97,21 +100,21 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
 
 def filter_by_internal_factors(all_geometric_realizations, component_radii, internal_factors, k=3):
     """
-    Finds the k nearest neighbors for each important node in the graph.
+    A function that filters the geometric realizations based on the internal factors of the spatial graph.
 
-    :param graph: The graph to find nearest neighbors in.
-    :type graph: networkx.Graph
+    :param all_geometric_realizations: A dictionary containing the geometric realizations for each unique spatial topology.
+    :type all_geometric_realizations: dict
 
-    :param positions: A dictionary mapping node IDs to (x, y, z) tuples representing their positions.
-    :type positions: dict
+    :param component_radii: A dictionary containing the radii of each component node.
+    :type component_radii: dict
 
-    :param important_nodes: A list of node IDs to find nearest neighbors for.
-    :type important_nodes: list
+    :param internal_factors: A list of nodes that are considered internal factors.
+    :type internal_factors: list
 
-    :param k: The number of nearest neighbors to find for each node. Default is 3.
-    :type k: int, optional
+    :param k: The number of nearest neighbors to consider.
+    :type k: int
 
-    :return: A dictionary mapping each important node to a list of its k nearest neighbors.
+    :return: A dictionary containing the filtered geometric realizations for each unique spatial topology.
     :rtype: dict
     """
 

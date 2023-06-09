@@ -118,6 +118,24 @@ def isomorphism(g, pos, n=3, rotate=True):
 
 
 def generate_geometric_realizations_for_one_topology(spatial_graph, component_radii, num_realizations=5, plot=False):
+    """
+    Generates geometric realizations for a single topology.
+
+    :param spatial_graph: The topology for which to generate geometric realizations.
+    :type topology: SpatialGraph
+
+    :param component_radii: A dict of radii for each component in the topology.
+    :type component_radii: dict
+
+    :param num_realizations: The number of geometric realizations to generate.
+    :type num_realizations: int
+
+    :param plot: Whether to plot the geometric realizations. Default is False.
+    :type plot: bool, optional
+
+    :param output_directory: The directory where the output files will be written.
+    :type output_directory: dict
+    """
 
     # Extract relevant information from the spatial graph
     nodes = spatial_graph.nodes
@@ -178,6 +196,24 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, component_ra
 
 
 def generate_geometric_realizations_for_all_topologies(spatial_graphs, component_radii, num_realizations=5, plot=False):
+    """
+    Generates geometric realizations for all topologies.
+    
+    :param spatial_graphs: The topologies for which to generate geometric realizations.
+    :type topology: list
+
+    :param component_radii: A dict of radii for each component in the topology.
+    :type component_radii: dict
+
+    :param num_realizations: The number of geometric realizations to generate.
+    :type num_realizations: int
+
+    :param plot: Whether to plot the geometric realizations. Default is False.
+    :type plot: bool, optional
+
+    :return: A dictionary mapping topologies to a list of geometric realizations.
+    :rtype: dict
+    """
 
     geometric_realizations= {}
 

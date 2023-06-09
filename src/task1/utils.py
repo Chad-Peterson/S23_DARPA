@@ -13,7 +13,10 @@ def write_output(data, output_directory):
     Writes data to a file in the output directory.
 
     :param data: The data to write.
-    :param filepath: The name of the file to write to.
+    :type data: dict
+
+    :param output_directory: The path to the output directory.
+    :type output_directory: str
     """
 
     output_dicts = []
