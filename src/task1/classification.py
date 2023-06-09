@@ -10,7 +10,7 @@ from scipy.spatial.distance import cdist
 
 def filter_by_environmental_factors(all_geometric_realizations, component_radii, environmental_factors, plot=True):
     """
-    Plot nodes with colors based on their nearest reference point.
+    A function that filters geometric realizations by unique combinations of environmental factors.
 
     :param all_geometric_realizations: A dictionary containing the geometric realizations for each unique spatial topology.
     :type all_geometric_realizations: dict
@@ -34,7 +34,7 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
     for spatial_graph, geometric_realizations in all_geometric_realizations.items():
 
         filtered_geometric_realizations = {}
-        unqiue_codes = []
+        unique_codes = []
         for geometric_realization in geometric_realizations.values():
 
             node_positions, edges = geometric_realization
@@ -42,7 +42,6 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
             component_positions = np.array([node_positions[node] for node in component_nodes])
 
             # Convert node positions and reference points to numpy arrays
-            # node_xyz = np.array(node_positions)
             node_xyz = np.array(list(node_positions.values()))
             ref_xyz = np.array([p[0] for p in environmental_factors])
             ref_colors = [p[1] for p in environmental_factors]
@@ -82,14 +81,13 @@ def filter_by_environmental_factors(all_geometric_realizations, component_radii,
 
                 ax.scatter(*component_positions[mask2].T, s=s, ec="w", c=ref_color)
 
-
             for ref_point, ref_color in zip(ref_xyz, ref_colors):
                 ax.scatter(*ref_point.T, s=100, ec="w", c=ref_color)
 
             plt.show()
 
-            if closest_factors not in unqiue_codes:
-                unqiue_codes.append(closest_factors)
+            if closest_factors not in unique_codes:
+                unique_codes.append(closest_factors)
                 filtered_geometric_realizations[closest_factors] = geometric_realization
 
         all_filtered_geometric_realizations[spatial_graph] = filtered_geometric_realizations
@@ -133,8 +131,6 @@ def filter_by_internal_factors(all_geometric_realizations, component_radii, inte
             nodes = component_nodes
             node_xyz = component_positions
 
-            # nodes = list(node_positions.keys())
-            # node_xyz = np.array([node_positions[v] for v in nodes])
             dist_matrix = cdist(node_xyz, node_xyz)
             nearest_neighbors = {}
             for i, node in enumerate(nodes):

@@ -16,7 +16,13 @@ def read_edge_code(stream, size):
     A helper function that reads a single byte from a stream and returns the corresponding edge code.
 
     :param stream: A stream to read from.
+    :type stream: io.BytesIO
+
     :param size: The number of bytes to read.
+    :type size: int
+
+    :return: The edge code.
+    :rtype: int
     """
     ans = [[]]
     for _ in range(size):
@@ -37,8 +43,13 @@ def shadows_via_plantri_by_edge_codes(num_trivalent_vertices, num_crossings):
     current working directory.
 
     :param num_trivalent_vertices: The number of trivalent vertices in the abstract graph.
+    :type num_trivalent_vertices: int
+
     :param num_crossings: The number of crossings in the abstract graph.
+    :type num_crossings: int
+
     :return: A list of shadows, where each shadow is a list of edge codes.
+    :rtype: list
     """
 
     assert num_trivalent_vertices % 2 == 0
@@ -115,9 +126,13 @@ def spatial_graph_diagrams_fixed_crossings(G, crossings):
     A function that enumerates the spatial graph diagrams with a given underlying graph and number of crossings.
 
     :param G: The underlying graph.
-    :param crossings: The number of crossings.
-    :return: A generator of spatial graph diagrams.
+    :type G: networkx.Graph
 
+    :param crossings: The number of crossings.
+    :type crossings: int
+
+    :return: A generator of spatial graph diagrams.
+    :rtype: generator
     """
     assert all(d == 3 for v, d in G.degree)
     assert all(a != b for a, b in G.edges())
@@ -145,9 +160,15 @@ def spatial_graph_diagrams_fixed_crossings(G, crossings):
 def enumerate_yamada_classes(G, max_crossings):
     """
     A function that enumerates the Yamada classes of a given underlying graph with a given maximum number of crossings.
+
     :param G: The underlying graph.
+    :type G: networkx.Graph
+
     :param max_crossings: The maximum number of crossings.
+    :type max_crossings: int
+
     :return: A dictionary mapping Yamada polynomials to spatial graph diagrams and the number of examined shadows.
+    :rtype: dict, int
     """
 
     examined = 0

@@ -19,9 +19,13 @@ def rotate_points(positions: np.ndarray,
     Rotates a set of points about the first 3D point in the array.
 
     :param positions: A numpy array of 3D points.
-    :param rotation: A numpy array of 3 Euler angles in radians.
+    :type positions: np.ndarray
 
-    :return: new_positions:
+    :param rotation: A numpy array of 3 Euler angles in radians.
+    :type rotation: np.ndarray
+
+    :return: A numpy array of rotated points.
+    :rtype: np.ndarray
     """
 
     if rotation is None:
@@ -61,6 +65,25 @@ def rotate_points(positions: np.ndarray,
 
 
 def subdivide_edge(g, edge, pos, n=3):
+    """
+    Subdivides an edge into n edges.
+
+    :param g: The graph to subdivide.
+    :type g: networkx.Graph
+
+    :param edge: A tuple containing the IDs of the nodes at the ends of the edge.
+    :type edge: tuple
+
+    :param pos: A dictionary mapping node IDs to (x, y, z) tuples representing their positions.
+    :type pos: dict
+
+    :param n: The number of subdivisions to make for each edge. Default is 3.
+    :type n: int, optional
+
+    :return: A tuple containing the new graph and a dictionary mapping node IDs to their new positions.
+    :rtype: tuple
+    """
+
     u, v = edge
     g.remove_edge(u, v)
 
@@ -121,8 +144,8 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, component_ra
     """
     Generates geometric realizations for a single topology.
 
-    :param spatial_graph: The topology for which to generate geometric realizations.
-    :type topology: SpatialGraph
+    :param spatial_graph: The spatial graph to generate geometric realizations for.
+    :type spatial_graph: SpatialGraph
 
     :param component_radii: A dict of radii for each component in the topology.
     :type component_radii: dict
@@ -133,8 +156,8 @@ def generate_geometric_realizations_for_one_topology(spatial_graph, component_ra
     :param plot: Whether to plot the geometric realizations. Default is False.
     :type plot: bool, optional
 
-    :param output_directory: The directory where the output files will be written.
-    :type output_directory: dict
+    :return: A dictionary mapping realization IDs to a list containing the node positions and edges.
+    :rtype: dict
     """
 
     # Extract relevant information from the spatial graph
@@ -199,8 +222,8 @@ def generate_geometric_realizations_for_all_topologies(spatial_graphs, component
     """
     Generates geometric realizations for all topologies.
     
-    :param spatial_graphs: The topologies for which to generate geometric realizations.
-    :type topology: list
+    :param spatial_graphs: A list of spatial graphs to generate geometric realizations for.
+    :type spatial_graphs: list
 
     :param component_radii: A dict of radii for each component in the topology.
     :type component_radii: dict
