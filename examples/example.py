@@ -149,9 +149,8 @@ geometric_realizations =  filter_by_internal_factors(geometric_realizations,
 
 # %% Write output
 
-# TODO Add write output function
+
 # Writes each geometric realization to an individual JSON file.
+output_directory = os.path.dirname(__file__) + '/output/'
 
-# output_directory = os.path.dirname(__file__) + '/output/'
-# write_output(geometric_realizations, output_directory)
-
+write_output(geometric_realizations, output_directory)
