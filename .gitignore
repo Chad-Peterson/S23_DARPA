@@ -1,2 +1,4 @@
 venv
 .idea
+examples/output/*
+src/task1.egg-info
