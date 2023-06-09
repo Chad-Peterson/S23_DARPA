@@ -37,9 +37,8 @@ from yamada.visualization import position_spatial_graphs_in_3D
 # lines of code that enumerate the Yamada classes.
 
 from yamada import extract_graph_from_json_file
-directory        = os.path.dirname(__file__) + '/sample_topologies/'
-filepath_simple  = directory + "G6/C1/G6C1I0.json"
-filepath_complex = directory + "G10/C4/G10C4I7.json"
+filepath_simple  = os.path.dirname(__file__) + '/sample_topologies/G6C1I0.json'
+filepath_complex = os.path.dirname(__file__) + '/sample_topologies/G10C4I0.json'
 # Specify whether to extract the simple or complex example
 nodes, node_positions, edges = extract_graph_from_json_file(filepath_complex)
 # component_radii = {'V0':0.76566057, 'V1':0.53418585, 'V2':1.18794388, 'V3':0.5923728, 'V4':0.53650239, 'V5':0.56783063}
