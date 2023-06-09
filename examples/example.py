@@ -36,69 +36,72 @@ from yamada.visualization import position_spatial_graphs_in_3D
 # Uncomment the following lines to use the pre-computed results. Make sure to comment out the
 # lines of code that enumerate the Yamada classes.
 
-# from yamada import extract_graph_from_json_file
-# directory        = os.path.dirname(__file__) + '/sample_topologies/'
-# filepath_simple  = directory + "G6/C1/G6C1I0.json"
-# filepath_complex = directory + "G10/C4/G10C4I7.json"
-# # Specify whether to extract the simple or complex example
-# nodes, node_positions, edges = extract_graph_from_json_file(filepath_simple)
-# sg_0  = SpatialGraph(nodes=nodes, node_positions=node_positions, edges=edges)
-# sgd_0 = sg_0.create_spatial_graph_diagram()
-# unique_spatial_topologies = {'ust_0': sgd_0}
-# spatial_graphs = [sg_0]
+from yamada import extract_graph_from_json_file
+directory        = os.path.dirname(__file__) + '/sample_topologies/'
+filepath_simple  = directory + "G6/C1/G6C1I0.json"
+filepath_complex = directory + "G10/C4/G10C4I7.json"
+# Specify whether to extract the simple or complex example
+nodes, node_positions, edges = extract_graph_from_json_file(filepath_complex)
+# component_radii = {'V0':0.76566057, 'V1':0.53418585, 'V2':1.18794388, 'V3':0.5923728, 'V4':0.53650239, 'V5':0.56783063}
+component_radii = {'V0':0.76566057, 'V1':0.53418585, 'V2':1.18794388, 'V3':0.5923728, 'V4':0.53650239, 'V5':0.56783063,
+                   'V6':0.55673628, 'V7':0.77791954, 'V8':0.50689909, 'V9':0.76539609}
+sg_0  = SpatialGraph(nodes=nodes, node_positions=node_positions, edges=edges)
+sgd_0 = sg_0.create_spatial_graph_diagram()
+unique_spatial_topologies = {'ust_0': sgd_0}
+spatial_graphs = [sg_0]
 
 
-# %% Define the System Architecture and Component Geometries
-
-# The system architecture is a NetworkX graph where the nodes represent components and the edges
-# represent connections between components. The nodes are labeled with integers starting from 0.
-
-# Currently, components must be either 2- or 3-valent. Please refer to the documentation for
-# more information.
-
-# User Input: System architecture
-# Simple example
-sa = [(0, 3), (0, 4), (1, 2), (1, 3), (1, 4), (2, 0), (2, 5), (3, 5), (4, 5)]
-# Complex example
-# sa = [(0, 1), (0, 3), (0, 8), (1, 8), (1, 9), (2, 6), (2, 9), (3, 2),
-#       (3, 4), (4, 5), (4, 7), (5, 6), (5, 9), (7, 6), (8, 7)]
-
-# User Input: Define the bounding sphere radii for each component
-# The layout generation process uses bounding spheres to ensure feasible layouts
-# Simple example
-component_radii = {'V0':0.76566057, 'V1':0.53418585, 'V2':1.18794388, 'V3':0.5923728, 'V4':0.53650239, 'V5':0.56783063}
-# Complex example
-# component_radii = {'V0':0.76566057, 'V1':0.53418585, 'V2':1.18794388, 'V3':0.5923728, 'V4':0.53650239, 'V5':0.56783063,
-#                    'V6':0.55673628, 'V7':0.77791954, 'V8':0.50689909, 'V9':0.76539609}
-
-# Create a networkx graph from the system architecture
-sa_graph = nx.MultiGraph()
-sa_graph.add_edges_from(sa)
-
-# Plot the system architecture
-nx.draw(sa_graph, with_labels=True)
-plt.show()
-
-
-# %% Enumerate all Unique Spatial Topologies
-
-# User Input
-number_of_crossings = 1
-
-unique_spatial_topologies, number_topologies = enumerate_yamada_classes(sa_graph, number_of_crossings)
-
-
-# %% Generate A Near-Planar Geometric Realization of Each Unique Spatial Topology
-
-
-sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
-
-# Convert each near-planar geometric realization into a SpatialGraph object
-spatial_graphs = []
-for sg_input in sg_inputs:
-    sg = SpatialGraph(*sg_input)
-    spatial_graphs.append(sg)
-    # sg.plot()
+# # %% Define the System Architecture and Component Geometries
+#
+# # The system architecture is a NetworkX graph where the nodes represent components and the edges
+# # represent connections between components. The nodes are labeled with integers starting from 0.
+#
+# # Currently, components must be either 2- or 3-valent. Please refer to the documentation for
+# # more information.
+#
+# # User Input: System architecture
+# # Simple example
+# sa = [(0, 3), (0, 4), (1, 2), (1, 3), (1, 4), (2, 0), (2, 5), (3, 5), (4, 5)]
+# # Complex example
+# # sa = [(0, 1), (0, 3), (0, 8), (1, 8), (1, 9), (2, 6), (2, 9), (3, 2),
+# #       (3, 4), (4, 5), (4, 7), (5, 6), (5, 9), (7, 6), (8, 7)]
+#
+# # User Input: Define the bounding sphere radii for each component
+# # The layout generation process uses bounding spheres to ensure feasible layouts
+# # Simple example
+# component_radii = {'V0':0.76566057, 'V1':0.53418585, 'V2':1.18794388, 'V3':0.5923728, 'V4':0.53650239, 'V5':0.56783063}
+# # Complex example
+# # component_radii = {'V0':0.76566057, 'V1':0.53418585, 'V2':1.18794388, 'V3':0.5923728, 'V4':0.53650239, 'V5':0.56783063,
+# #                    'V6':0.55673628, 'V7':0.77791954, 'V8':0.50689909, 'V9':0.76539609}
+#
+# # Create a networkx graph from the system architecture
+# sa_graph = nx.MultiGraph()
+# sa_graph.add_edges_from(sa)
+#
+# # Plot the system architecture
+# nx.draw(sa_graph, with_labels=True)
+# plt.show()
+#
+#
+# # %% Enumerate all Unique Spatial Topologies
+#
+# # User Input
+# number_of_crossings = 1
+#
+# unique_spatial_topologies, number_topologies = enumerate_yamada_classes(sa_graph, number_of_crossings)
+#
+#
+# # %% Generate A Near-Planar Geometric Realization of Each Unique Spatial Topology
+#
+#
+# sg_inputs = position_spatial_graphs_in_3D(unique_spatial_topologies)
+#
+# # Convert each near-planar geometric realization into a SpatialGraph object
+# spatial_graphs = []
+# for sg_input in sg_inputs:
+#     sg = SpatialGraph(*sg_input)
+#     spatial_graphs.append(sg)
+#     # sg.plot()
 
 
 # %% Generate a Spatially Diverse Set of Geometric Realizations for Each Unique Spatial Topology
