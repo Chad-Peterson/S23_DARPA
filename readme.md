@@ -4,7 +4,7 @@
 
 This project requires Python 3; it has been tested on Python 3.10 for Linux. It may be installed locally using the following command in the root directory of the project:
 
-```bash
+```
 pip install .
 ```
 
@@ -18,7 +18,7 @@ Plantri can be downloaded from [here](http://users.cecs.anu.edu.au/~bdm/plantri/
 
 2. Compile the source code.
 
-   ```bash
+   ```
    cd plantri53
    make plantri
    ```
@@ -37,9 +37,11 @@ Plantri can be downloaded from [here](http://users.cecs.anu.edu.au/~bdm/plantri/
 
 ## Usage
 
-Usage instructions for this project are documented in interaction Python notebooks (Jupyer Notebooks) within the /examples folder.
+Usage instructions for this project are documented in interaction Python notebooks (Jupyter Notebooks) within the 
+./examples folder.
 
 ## API Reference
 
-The API reference for this project is documented in the /docs folder.
+The API reference for this project is documented in the "docs" directory. See ./docs/_build/html/index.html for the 
+main page.
 
