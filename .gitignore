@@ -1,4 +1,5 @@
-venv
+venv/*
+examples/plantri53
 .idea
 examples/output/*
 src/task1.egg-info
