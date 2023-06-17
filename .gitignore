@@ -3,3 +3,4 @@ examples/plantri53
 .idea
 examples/output/*
 src/task1.egg-info
+__pycache__
