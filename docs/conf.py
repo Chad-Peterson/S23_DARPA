@@ -13,7 +13,9 @@ author = 'Chad Peterson'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc','rst2pdf.pdfbuilder']
+
+pdf_documents = [('index', u'API', u'DARPA MDOP Task 1: Topological Partitioning', u'Chad Peterson')]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
