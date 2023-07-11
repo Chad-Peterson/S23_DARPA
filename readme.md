@@ -37,7 +37,7 @@ Plantri can be downloaded from [here](http://users.cecs.anu.edu.au/~bdm/plantri/
 
 ## Usage
 
-Usage instructions for this project are documented in interaction Python notebooks (Jupyter Notebooks) within the 
+Usage instructions for this project are documented in the Python script within the 
 ./examples folder.
 
 ## API Reference
