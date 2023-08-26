@@ -26,6 +26,7 @@ from yamada import SpatialGraph
 from yamada.visualization import position_spatial_graphs_in_3D
 
 
+
 # %% Archived examples
 
 
